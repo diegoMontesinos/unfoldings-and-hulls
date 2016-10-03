@@ -4,8 +4,19 @@
   "description": "Implementation and visualizations of some algorithms on convex polyhedron: 3d convex hull and unfoldings.",
   "author": "Diego Montesinos",
   "homepage": "https://bitbucket.org/diegoMontesinos/unfoldings-and-hulls",
+  "scripts": {
+    "start": "grunt serve"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://diegoMontesinos@bitbucket.org/diegoMontesinos/unfoldings-and-hulls.git"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-connect": "^1.0.2",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "load-grunt-tasks": "^3.5.2",
+    "time-grunt": "^1.4.0"
   }
 }
