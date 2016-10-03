@@ -8,7 +8,7 @@ module.exports = function(grunt) {
 
   // configurable vars
   var port = grunt.option('port') || 8000;
-  var base = grunt.option('base') || '.';
+  var base = grunt.option('base') || 'www';
 
   // Project configuration
   grunt.initConfig({
@@ -25,13 +25,13 @@ module.exports = function(grunt) {
 
     watch: {
       js: {
-        files: [ 'src/**/*.js' ]
+        files: [ 'www/src/**/*.js' ]
       },
       css: {
-        files: [ 'css/**/*.css' ]
+        files: [ 'www/css/**/*.css' ]
       },
       html: {
-        files: [ '*.html']
+        files: [ 'www/*.html']
       },
       markdown: {
         files: [ '*.md' ]
@@ -46,8 +46,8 @@ module.exports = function(grunt) {
         jshintrc : '.jshintrc'
       },
       all : [
-        'src/**/*.js',
-        '!src/lib/**/*.js'
+        'www/src/**/*.js',
+        '!www/src/lib/**/*.js'
       ]
     }
   });
