@@ -13,10 +13,10 @@ requirejs.config({
 });
 
 // Load main application file
-requirejs(['jquery'], function( $ ) {
+requirejs(['jquery', 'UnfoldingsAndHulls'], function ( $, app ) {
   'use strict';
 
-  $(document).ready(function() {
-    console.log('dom loaded');
+  $(document).ready(function () {
+    app.start();
   });
 });
