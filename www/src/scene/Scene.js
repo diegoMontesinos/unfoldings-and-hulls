@@ -88,6 +88,24 @@ define(function (require, exports, module) {
       this.renderer.render(this.scene, this.mainCamera);
     },
 
+    addPoints: function ( points, color ) {
+      var geometry = new THREE.Geometry();
+      for (var i = 0; i < points.length; i++) {
+        geometry.vertices.push(points[i]);
+      }
+
+      var material = new THREE.PointsMaterial({
+        color : color || 0x000,
+        size  : 2.0
+      });
+
+      var points = new THREE.Points(geometry, material);
+
+      this.scene.add(points);
+
+      return points;
+    },
+
     /*********************
      * Manejo de eventos *
      *********************/
