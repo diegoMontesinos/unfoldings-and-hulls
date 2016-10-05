@@ -7,8 +7,17 @@ requirejs.config({
   paths: {
 
     // Utils
-    'jquery' : 'lib/jquery/jquery',
-    'debug'  : 'lib/utils/debug'
+    'jquery'     : 'lib/jquery/jquery',
+    'debug'      : 'lib/utils/debug',
+
+    // Three
+    'three'      : 'lib/three/three',
+    'tbControls' : 'lib/three/controls/TrackballControls'
+  },
+
+  // Load configuration options for non-module libraries
+  shim: {
+    'tbControls' : { deps: [ 'three' ], exports: 'TrackballControls' }
   }
 });
 
