@@ -9,11 +9,18 @@
     <meta name="description" content="Implementation of some algorithm on convex polyhedron: unfolding by faces and 3D convex hull.">
     <meta name="author" content="Diego Montesinos">
 
+    <!-- Style sheets -->
     <link rel="stylesheet" href="css/vendor/normalize.css">
     <link rel="stylesheet" href="css/main.css">
   </head>
-  <body>
-    <div id="main-container"></div>
+
+  <body oncontextmenu="return false;">
+    <div id="main-container">
+
+      <div id="viewport-3d">
+        <canvas id="main-3d"></canvas>
+      </div>
+    </div>
 
     <!-- Load JS App -->
     <script data-main="src/main.js" src="src/lib/utils/require.js"></script>
