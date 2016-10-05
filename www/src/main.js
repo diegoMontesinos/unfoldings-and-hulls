@@ -2,6 +2,7 @@
 
 // Configuracion para RequireJS
 requirejs.config({
+  baseUrl: '../src',
 
   // Rutas para los componentes mas usados
   paths: {
