@@ -1,9 +1,9 @@
 /* globals requirejs */
 
-// RequireJS configuration
+// Configuracion para RequireJS
 requirejs.config({
 
-  // Path shortcuts for common used components
+  // Rutas para los componentes mas usados
   paths: {
 
     // Utils
@@ -15,13 +15,13 @@ requirejs.config({
     'tbControls' : 'lib/three/controls/TrackballControls'
   },
 
-  // Load configuration options for non-module libraries
+  // Configuracion para las bibliotecas no modulares
   shim: {
     'tbControls' : { deps: [ 'three' ], exports: 'TrackballControls' }
   }
 });
 
-// Load main application file
+// Carga la aplicacion principal
 requirejs(['jquery', 'UnfoldingsAndHulls'], function ( $, app ) {
   'use strict';
 

@@ -1,21 +1,21 @@
 /**
- * This module exports a singleton instance of the "Unfoldings and Hulls" app.
- * Is the starting point for the app.
+ * Este modulo exporta un objeto singleton de la aplicacion.
+ * Es el punto de entrada para toda la logica.
  *
  * ------
  * Diego Montesinos [diegoMontesinos@ciencias.unam.mx]
- * Faculty of Science, U.N.A.M.
+ * Facultad de Ciencias, U.N.A.M.
  */
 define(function (require, exports, module) {
   'use strict';
 
-  // Set debug ID
+  // Debug ID
   var debug = require('debug')('app');
 
-  // Application dependencies
+  // Dependencias
   var Scene = require('./scene/Scene');
 
-  // Application definition
+  // Definicion de la aplicacion
   var UnfoldingsAndHulls = function () {
     debug('Setup app');
 
@@ -31,12 +31,11 @@ define(function (require, exports, module) {
     }
   };
 
-  // Simple exports check
   if (!exports) {
     exports = {};
   }
 
-  // Return application instance as module export
+  // Regresa una instancia de la aplicacion como el resultado del modulo
   var app = new UnfoldingsAndHulls();
   module.exports = app;
 });

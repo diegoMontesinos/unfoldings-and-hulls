@@ -1,30 +1,30 @@
 /**
- * Axis-Aligned Bounding Box.
+ * Representa toda la escena 3D.
+ * Almacena y dibuja las entradas de los algoritmos asi como la geometria
+ * resultante.
  *
- * Diego Montesinos @ Hotpixel 2016
- * email to: diegoa.montesinos@gmail.com
- * ---
- * When I wrote this, only God and I understood what I was doing.
- * Now, God only knows.
+ * ------
+ * Diego Montesinos [diegoMontesinos@ciencias.unam.mx]
+ * Facultad de Ciencias, U.N.A.M.
  */
 define(function (require, exports, module) {
   'use strict';
 
-  // Set debug ID
+  // Debug ID
   var debug = require('debug')('app:scene');
 
-  // Module dependencies
+  // Dependencias
   var $     = require('jquery');
   var THREE = require('three');
   require('tbControls');
 
-  // Module definition
+  // Definicion del modulo
   var Scene = function ( app ) {
     debug('Setup 3D scene');
 
     this.app = app;
 
-    // Viewport and canvas
+    // Viewport y canvas
     this.viewport       = $('#viewport-3d')[0];
     this.viewportWidth  = $(this.viewport).width();
     this.viewportHeight = $(this.viewport).height();
@@ -32,7 +32,7 @@ define(function (require, exports, module) {
 
     this.mainCanvas     = $('#main-3d')[0];
 
-    // ThreeJS elements: scene, main camera and the renderer
+    // Elementos ThreeJS: la escena, la camara principal y el renderer
     this.scene      = new THREE.Scene();
 
     this.mainCamera = new THREE.PerspectiveCamera(75, this.viewportRatio, 1, 10000);
@@ -48,7 +48,7 @@ define(function (require, exports, module) {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.viewportWidth, this.viewportHeight);
 
-    // Axis and grid helpers
+    // Ejes y grid
     this.axisHelper = new THREE.AxisHelper(350);
     this.scene.add(this.axisHelper);
 
@@ -70,9 +70,9 @@ define(function (require, exports, module) {
 
   Scene.prototype = {
 
-    /*****************
-     * Scene Methods *
-     *****************/
+    /***********
+     * Metodos *
+     ***********/
 
     start: function () {
       debug('Starting 3D scene');
@@ -88,9 +88,9 @@ define(function (require, exports, module) {
       this.renderer.render(this.scene, this.mainCamera);
     },
 
-    /******************
-     * Event Handlers *
-     ******************/
+    /*********************
+     * Manejo de eventos *
+     *********************/
 
     setupEvents: function () {
       window.addEventListener('resize', this.onWindowResize.bind(this), false);
@@ -107,11 +107,10 @@ define(function (require, exports, module) {
     }
   };
 
-  // Simple exports check
   if (!exports) {
     exports = {};
   }
 
-  // Return module definition as the export
+  // Regresa la definicion del modulo como resultado
   module.exports = Scene;
 });
