@@ -99,11 +99,11 @@ define(function (require, exports, module) {
         size  : 2.0
       });
 
-      var points = new THREE.Points(geometry, material);
+      var pointsObj = new THREE.Points(geometry, material);
 
-      this.scene.add(points);
+      this.scene.add(pointsObj);
 
-      return points;
+      return pointsObj;
     },
 
     /*********************

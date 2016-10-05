@@ -35,7 +35,7 @@ define(function (require, exports, module) {
       var x, y, z;
       var v;
 
-      while (points.length != n) {
+      while (points.length !== n) {
         x = this.randomRange(minVec.x, maxVec.x);
         y = this.randomRange(minVec.y, maxVec.y);
         z = this.randomRange(minVec.z, maxVec.z);
@@ -67,7 +67,7 @@ define(function (require, exports, module) {
       var alpha, beta, r;
       var v;
 
-      while (points.length != n) {
+      while (points.length !== n) {
         alpha = this.randomRange(0.0, 2.0 * Math.PI);
         beta  = this.randomRange(0.0, Math.PI);
         r     = this.randomRange(0.0, radius);
