@@ -1,3 +1,21 @@
+/**
+ * Implementación de la estructura de datos Doubly-connected Edge List (DCEL)
+ * para representar una malla de tres dimensiones.
+ *
+ * Con fines de tener una forma de incluir la DCEL en la escena, este modulo
+ * extiende al modulo THREE.Geometry.
+ *
+ * Se mantienen tres registros: Caras, Aristas y Vertices.
+ * Dado que una arista es adyacente a dos caras, una arista se guarda en dos
+ * registros llamados half-edge.
+ *
+ * Usaremos instancias de este modulo para representar los poliedros de este
+ * proyecto.
+ *
+ * ------
+ * Diego Montesinos [diegoMontesinos@ciencias.unam.mx]
+ * Facultad de Ciencias, U.N.A.M.
+ */
 define(function (require, exports, module) {
   'use strict';
 
