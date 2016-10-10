@@ -17,24 +17,34 @@ define(function (require, exports, module) {
     THREE.Vector3.call(this, x, y, z);
   };
 
+  Vector3.prototype = Object.create(THREE.Vector3.prototype);
+  Vector3.prototype.constructor = Vector3;
+
   /**
-   * Calcula el volumen con signo del tetraedro formado por cuatro
-   * vectores basado en el producto cruz.
+   * Calcula el volumen con signo del paralelepipedo derivado por cuatro
+   * puntos.
    *
-   * @param  { Object } a Primer vertice del tetraedro
-   * @param  { Object } b Segundo vertice del tetraedro
-   * @param  { Object } c Tercer vertice del tetraedro
-   * @param  { Object } d Cuarto vertice del tetraedro
-   * @return { Number }   Volumen con signo calculada
+   * Este calculo se basa en el triple producto vectorial, eliminando uno de los
+   * vectores llevandolo al origen (restandoselo a los otros). Esto es:
+   * ((a - d) x (b - d)) x (c - d)
+   *
+   * @param  { Object } a Primer vertice
+   * @param  { Object } b Segundo vertice
+   * @param  { Object } c Tercer vertice
+   * @param  { Object } d Cuarto vertice
+   * @return { Number }   Volumen con signo
    */
   Vector3.volume3 = function ( a, b, c, d ) {
 
     // Transladamos los puntos para que d quede en el origen
-    var ax = a.x - d.x, ay = a.y - d.y, az = a.z - d.z;
-    var bx = b.x - d.x, by = b.y - d.y, bz = b.z - d.z;
-    var cx = c.x - d.x, cy = c.y - d.y, cz = c.z - d.z;
+    var ax = (a.x - d.x), ay = (a.y - d.y), az = (a.z - d.z);
+    var bx = (b.x - d.x), by = (b.y - d.y), bz = (b.z - d.z);
+    var cx = (c.x - d.x), cy = (c.y - d.y), cz = (c.z - d.z);
 
-    var vol = ax * (by * cz - bz * cy) + ay * (bz * cx - bx * cz) + az * (bx * cy - by * cx);
+    var vol = ax * (by * cz - bz * cy) +
+              ay * (bz * cx - bx * cz) +
+              az * (bx * cy - by * cx);
+
     return vol;
   };
 
@@ -53,8 +63,35 @@ define(function (require, exports, module) {
     return Vector3.volumeSign(a, b, c, d) === 0;
   };
 
-  Vector3.prototype = Object.create(THREE.Vector3.prototype);
-  Vector3.prototype.constructor = Vector3;
+  Vector3.prototype.equals = function ( v ) {
+    var epsilon = 1e-10;
+    return Math.abs(this.x - v.x) <= epsilon &&
+           Math.abs(this.y - v.y) <= epsilon &&
+           Math.abs(this.z - v.z) <= epsilon;
+  };
+
+  /**
+   * Comparador lexicografico.
+   *
+   * @param  { Object } v   Un Vector3 para comparar
+   * @return { Number }     El resultado de la comparacion:
+   *                          0 si son iguales,
+   *                          < 0 si este vector es menor que el pasado
+   *                          > 0 si este vector es mayo que el pasado
+   */
+  Vector3.prototype.compareTo = function ( v ) {
+    if (!this.equals(v)) {
+      var diff = this.x - v.x;
+      diff = diff === 0.0 ? this.y - v.y : diff;
+      diff = diff === 0.0 ? this.z - v.z : diff;
+
+      if (diff !== 0) {
+        return diff / Math.abs(diff);
+      }
+    }
+
+    return 0;
+  };
 
   if (!exports) {
     exports = {};
