@@ -93,6 +93,27 @@ define(function (require, exports, module) {
     return 0;
   };
 
+  /**
+   * Calcula el vector resultante de proyectar
+   * este vector sobre otro dado.
+   *
+   * @param  { Object } v El vector a proyectar
+   * @return { Object }   La proyeccion del vector
+   */
+  Vector3.prototype.projectOn = function ( v ) {
+    if (v.length() !== 1.0) {
+      v = v.clone();
+      v.normalize();
+    }
+
+    var len = this.dot(v);
+    var x = len * v.x;
+    var y = len * v.y;
+    var z = len * v.z;
+
+    return new Vector3(x, y, z);
+  };
+
   if (!exports) {
     exports = {};
   }

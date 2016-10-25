@@ -24,9 +24,9 @@ define(function (require, exports, module) {
 
   // Definicion del modulo
   var DCELFace = function ( heA, heB, heC ) {
-    var a = heA.iOrigin;
-    var b = heB.iOrigin;
-    var c = heC.iOrigin;
+    var a = heA.origin.index;
+    var b = heB.origin.index;
+    var c = heC.origin.index;
     THREE.Face3.call(this, a, b, c);
 
     this.heA = heA;
@@ -36,6 +36,10 @@ define(function (require, exports, module) {
 
   DCELFace.prototype = Object.create(THREE.Face3);
   DCELFace.prototype.constructor = DCELFace;
+
+  DCELFace.prototype.getComponent = function () {
+    return [ this.heA, this.heB, this.heC ];
+  };
 
   if (!exports) {
     exports = {};
