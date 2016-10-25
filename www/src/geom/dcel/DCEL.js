@@ -34,36 +34,44 @@ define(function (require, exports, module) {
   DCEL.prototype.constructor = DCEL;
 
   DCEL.prototype.addVertex = function ( vertex ) {
-    var vertices = this.vertices;
-    var len = vertices.length;
+    this.vertices.push(vertex);
+    vertex.index = this.vertices.length - 1;
 
-    if (len > 0) {
-      var index = Utils.binarySearchVertex(0, len - 1, vertices, vertex);
-
-      if (!vertices[index] || !vertices[index].equals(vertex)) {
-        vertices.splice(index, 0, vertex);
-        return vertex;
-      }
-    } else {
-      vertices.push(vertex);
-      return vertex;
-    }
+    return vertex;
   };
 
+  // TODO: Hacer O(log n) esta busqueda
   DCEL.prototype.getVertexIndexByCoords = function ( coords ) {
-    var vertices = this.vertices;
-    var len = vertices.length;
+    for (var i = 0, len = this.vertices.length; i < len; i++) {
+      var v = this.vertices[i];
+      if (v.equals(coords)) {
+        return i;
+      }
+    }
 
-    var index  = Utils.binarySearchVertex(0, len - 1, vertices, coords);
-    return index;
+    return -1;
+  };
+
+  // TODO: Hacer O(log n) esta busqueda
+  DCEL.prototype.getVertexByCoords = function ( coords ) {
+    for (var i = 0, len = this.vertices.length; i < len; i++) {
+      var v = this.vertices[i];
+      if (v.equals(coords)) {
+        return v;
+      }
+    }
   };
 
   DCEL.prototype.addHalfEdge = function ( halfEdge ) {
     this.halfEdges.push(halfEdge);
+
+    return halfEdge;
   };
 
   DCEL.prototype.addFace = function ( face ) {
     this.faces.push(face);
+
+    return face;
   };
 
   if (!exports) {

@@ -13,10 +13,10 @@ define(function (require, exports, module) {
   var Vector3 = require('math/Vector3');
 
   // Definicion del modulo
-  var DCELVertex = function ( x, y, z, incidentEdge ) {
+  var DCELVertex = function ( x, y, z ) {
     Vector3.call(this, x, y, z);
 
-    this.incidentEdge = incidentEdge;
+    this.incidentEdge = null;
   };
 
   DCELVertex.prototype = Object.create(Vector3.prototype);

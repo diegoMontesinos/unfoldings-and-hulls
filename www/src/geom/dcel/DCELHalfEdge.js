@@ -20,21 +20,16 @@ define(function (require, exports, module) {
   'use strict';
 
   // Definicion del modulo
-  var DCELHalfEdge = function ( iOrigin, iEnd ) {
-    this.iOrigin = iOrigin;
-    this.iEnd    = iEnd;
+  var DCELHalfEdge = function ( origin, end ) {
+
+    this.origin = origin;
+    this.end    = end;
 
     this.twin = null;
     this.prev = null;
     this.next = null;
 
     this.incidentFace = null;
-  };
-
-  DCELHalfEdge.prototype = {
-    equals : function ( he ) {
-      return this.origin.equals(he.origin) && this.end.equals(he.end);
-    }
   };
 
   if (!exports) {
