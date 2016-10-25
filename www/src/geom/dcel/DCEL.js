@@ -21,7 +21,6 @@ define(function (require, exports, module) {
 
   // Dependencias
   var THREE = require('three');
-  var Utils = require('misc/Utils');
 
   // Definicion del modulo
   var DCEL = function () {

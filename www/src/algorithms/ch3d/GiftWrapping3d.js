@@ -122,11 +122,7 @@ define(function (require, exports, module) {
     },
 
     addWrappingFace: function ( vA, vB, vC, dcel ) {
-      var iVA = dcel.getVertexIndexByCoords(vA);
-      var iVB = dcel.getVertexIndexByCoords(vB);
-      var iVC = dcel.getVertexIndexByCoords(vC);
-
-      var heA = new DCELHalfEdge(vA, vB, iVA, iVB);
+      var heA = new DCELHalfEdge(vA, vB);
       var heB = new DCELHalfEdge(vB, vC);
       var heC = new DCELHalfEdge(vC, vA);
       dcel.addHalfEdge(heA);
