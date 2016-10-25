@@ -27,14 +27,14 @@ define(function (require, exports, module) {
       var dcel = new DCEL();
 
       geometry.vertices.forEach(function ( v ) {
-        var vertex = new DCELVertex(v.x, v.y, v.z);
-        dcel.addVertex(vertex);
-      }, this);
+        if (!dcel.getVertexByCoords(v)) {
+          var vertex = new DCELVertex(v.x, v.y, v.z);
+          dcel.addVertex(vertex);
+        }
+      });
 
-      // El "punto de encuentro" nos ayuda a juntar las medias aristas con sus
-      // gemelas
+      // "Punto de encuentro" para unir medias aristas con sus gemelas
       var meetPoint = {};
-
       geometry.faces.forEach(function ( f ) {
 
         // Vertices de la geometria
@@ -43,18 +43,14 @@ define(function (require, exports, module) {
         var vCGeom = geometry.vertices[f.c];
 
         // Indices y vertices en la DCEL
-        var iVA = dcel.getVertexIndexByCoords(vAGeom);
-        var iVB = dcel.getVertexIndexByCoords(vBGeom);
-        var iVC = dcel.getVertexIndexByCoords(vCGeom);
-
-        var vA  = dcel.vertices[iVA];
-        var vB  = dcel.vertices[iVB];
-        var vC  = dcel.vertices[iVC];
+        var vA = dcel.getVertexByCoords(vAGeom);
+        var vB = dcel.getVertexByCoords(vBGeom);
+        var vC = dcel.getVertexByCoords(vCGeom);
 
         // Creamos medias aristas
-        var heA = new DCELHalfEdge(iVA, iVB);
-        var heB = new DCELHalfEdge(iVB, iVC);
-        var heC = new DCELHalfEdge(iVC, iVA);
+        var heA = new DCELHalfEdge(vA, vB);
+        var heB = new DCELHalfEdge(vB, vC);
+        var heC = new DCELHalfEdge(vC, vA);
 
         vA.incidentEdge = heA;
         vB.incidentEdge = heB;
