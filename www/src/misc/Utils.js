@@ -126,23 +126,6 @@ define(function (require, exports, module) {
     randomRange: function ( start, end ) {
       var range = end - start;
       return (Math.random() * range) + start;
-    },
-
-    binarySearchVertex: function ( start, end, vertexArray, searchVertex ) {
-      if (start <= end) {
-        var middle = (start + end) / 2 | 0;
-
-        var comparation = vertexArray[middle].compareTo(searchVertex);
-        if (comparation < 0) {
-          return this.binarySearchVertex(middle + 1, end, vertexArray, searchVertex);
-        } else if (comparation > 0) {
-          return this.binarySearchVertex(start, middle - 1, vertexArray, searchVertex);
-        } else {
-          return middle;
-        }
-      }
-
-      return start;
     }
   };
 

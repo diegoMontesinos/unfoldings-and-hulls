@@ -84,10 +84,11 @@ define(function (require, exports, module) {
      *
      * @param  { Object } he        La media arista
      * @param  { Object } meetPoint Objeto auxiliar para punto de encuentro
+     * @return { Object }           La arista gemela si la encontro
      */
     matchTwinHalfEdge: function ( he, meetPoint ) {
-      var idAux  = he.iOrigin + '-' + he.iEnd;
-      var twinId = he.iEnd + '-' + he.iOrigin;
+      var idAux  = he.origin.index + '-' + he.end.index;
+      var twinId = he.end.index + '-' + he.origin.index;
 
       var twin = meetPoint[twinId];
       if (twin) {
@@ -98,6 +99,8 @@ define(function (require, exports, module) {
       } else {
         meetPoint[idAux] = he;
       }
+
+      return twin;
     },
 
     /**
@@ -106,17 +109,20 @@ define(function (require, exports, module) {
      * [0] : DCELHalfEdge (arista del origen al final)
      * [1] : DCELHalfEdge (arista del final al origien)
      *
-     * @param  { Number } iOrigin El indice del origen de la arista
-     * @param  { Number } iEnd    El indice del final de la arista
-     * @return { Object }         Las aristas gemelas entre si
+     * @param  { Object } origin El vertice origen de la arista
+     * @param  { Object } end    El vertice final de la arista
+     * @return { Object }        Las medias aristas gemelas entre si
      */
-    createEdge: function ( iOrigin, iEnd ) {
+    createEdge: function ( origin, end ) {
 
-      var originEnd = new DCELHalfEdge(iOrigin, iEnd);
-      var endOrigin = new DCELHalfEdge(iEnd, iOrigin);
+      var originEnd = new DCELHalfEdge(origin, end);
+      var endOrigin = new DCELHalfEdge(end, origin);
 
       originEnd.twin = endOrigin;
       endOrigin.twin = originEnd;
+
+      origin.incidentEdge = originEnd;
+      end.incidentEdge = endOrigin;
 
       return [ originEnd, endOrigin ];
     },
