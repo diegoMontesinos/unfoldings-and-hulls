@@ -88,6 +88,10 @@ define(function (require, exports, module) {
       this.renderer.render(this.scene, this.mainCamera);
     },
 
+    add: function ( object ) {
+      this.scene.add(object);
+    },
+
     addPoints: function ( points, color ) {
       var geometry = new THREE.Geometry();
       for (var i = 0; i < points.length; i++) {
@@ -96,7 +100,7 @@ define(function (require, exports, module) {
 
       var material = new THREE.PointsMaterial({
         color : color || 0x000,
-        size  : 2.0
+        size  : 1.0
       });
 
       var pointsObj = new THREE.Points(geometry, material);
