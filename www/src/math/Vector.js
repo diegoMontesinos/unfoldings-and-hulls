@@ -1,6 +1,8 @@
 /**
- * Representa un vector de tres coordenadas
- * Extiende la implementación hecha en THREE.Vector3
+ * Representa a un vector en el espacio. También se puede ocupar (como en gran
+ * parte de este proyecto) para representar a un punto.
+ * A pesar de que tiene tres coordenadas, si se hace z = 0, puede ser un vector
+ * en el plano.
  *
  * ------
  * Diego Montesinos [diegoMontesinos@ciencias.unam.mx]
@@ -9,16 +11,12 @@
 define(function (require, exports, module) {
   'use strict';
 
-  // Dependencias
-  var THREE = require('three');
-
-  // Definicion del modulo
-  var Vector3 = function ( x, y, z ) {
-    THREE.Vector3.call(this, x, y, z);
+  // Constructor
+  var Vector = function (x, y, z) {
+    this.x = x || 0;
+    this.y = y || 0;
+    this.z = z || 0;
   };
-
-  Vector3.prototype = Object.create(THREE.Vector3.prototype);
-  Vector3.prototype.constructor = Vector3;
 
   /**
    * Calcula el volumen con signo del paralelepipedo derivado por cuatro
@@ -34,7 +32,7 @@ define(function (require, exports, module) {
    * @param  { Object } d Cuarto vertice
    * @return { Number }   Volumen con signo
    */
-  Vector3.volume3 = function ( a, b, c, d ) {
+  Vector.volume3 = function (a, b, c, d) {
 
     // Transladamos los puntos para que d quede en el origen
     var ax = (a.x - d.x), ay = (a.y - d.y), az = (a.z - d.z);
@@ -48,8 +46,8 @@ define(function (require, exports, module) {
     return vol;
   };
 
-  Vector3.volumeSign = function ( a, b, c, d ) {
-    var volume = Vector3.volume3(a, b, c, d);
+  Vector.volumeSign = function (a, b, c, d) {
+    var volume = Vector.volume3(a, b, c, d);
     if (volume < -0.5) {
       return -1;
     } else if (volume > 0.5) {
@@ -59,11 +57,11 @@ define(function (require, exports, module) {
     }
   };
 
-  Vector3.areCoplanar = function ( a, b, c, d ) {
-    return Vector3.volumeSign(a, b, c, d) === 0;
+  Vector.areCoplanar = function (a, b, c, d) {
+    return Vector.volumeSign(a, b, c, d) === 0;
   };
 
-  Vector3.prototype.equals = function ( v ) {
+  Vector.prototype.equals = function (v) {
     var epsilon = 1e-10;
     return Math.abs(this.x - v.x) <= epsilon &&
            Math.abs(this.y - v.y) <= epsilon &&
@@ -73,13 +71,13 @@ define(function (require, exports, module) {
   /**
    * Comparador lexicografico.
    *
-   * @param  { Object } v   Un Vector3 para comparar
+   * @param  { Object } v   Un Vector para comparar
    * @return { Number }     El resultado de la comparacion:
    *                          0 si son iguales,
    *                          < 0 si este vector es menor que el pasado
    *                          > 0 si este vector es mayo que el pasado
    */
-  Vector3.prototype.compareTo = function ( v ) {
+  Vector.prototype.compareTo = function (v) {
     if (!this.equals(v)) {
       var diff = this.x - v.x;
       diff = diff === 0.0 ? this.y - v.y : diff;
@@ -100,7 +98,7 @@ define(function (require, exports, module) {
    * @param  { Object } v El vector a proyectar
    * @return { Object }   La proyeccion del vector
    */
-  Vector3.prototype.projectOn = function ( v ) {
+  Vector.prototype.projectOn = function (v) {
     if (v.length() !== 1.0) {
       v = v.clone();
       v.normalize();
@@ -111,7 +109,13 @@ define(function (require, exports, module) {
     var y = len * v.y;
     var z = len * v.z;
 
-    return new Vector3(x, y, z);
+    return new Vector(x, y, z);
+  };
+
+  Vector.prototype.add = function (v) {
+    this.x += v.x;
+    this.y += v.y;
+    this.z += v.z;    
   };
 
   if (!exports) {
@@ -119,5 +123,5 @@ define(function (require, exports, module) {
   }
 
   // Regresa la definicion del modulo como resultado
-  module.exports = Vector3;
+  module.exports = Vector;
 });
