@@ -6,7 +6,7 @@
 
     <title>Unfoldings and Hulls</title>
 
-    <meta name="description" content="Implementacion de algunos algoritmos sobre poliedros convexos: desdoblamiento y cierre convexo 3D.">
+    <meta name="description" content="Implementacion de algunos algoritmos sobre poliedros convexos.">
     <meta name="author" content="Diego Montesinos">
 
     <!-- Style sheets -->
@@ -17,8 +17,13 @@
   <body oncontextmenu="return false;">
     <div id="main-container">
 
-      <div id="viewport-3d">
+      <div id="viewport-3d" style="display: none;">
         <canvas id="main-3d"></canvas>
+      </div>
+
+      <div class="viewport-container">
+        <svg id="viewport-2D" version="1.1" xmlns="http://www.w3.org/2000/svg" width="500" height="500">
+        </svg>
       </div>
     </div>
 

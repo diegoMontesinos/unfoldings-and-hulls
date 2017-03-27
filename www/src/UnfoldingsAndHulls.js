@@ -13,21 +13,33 @@ define(function (require, exports, module) {
   var debug = require('debug')('app');
 
   // Dependencias
-  var Scene = require('./scene/Scene');
+  var View2D = require('views/View2D');
+
+  var Utils  = require('misc/Utils');
+  var Vector = require('math/Vector');
 
   // Definicion de la aplicacion
   var UnfoldingsAndHulls = function () {
     debug('Setup app');
 
     this.debugMode = true;
-    this.scene     = new Scene(this);
+
+    this.view2D = new View2D();
   };
 
   UnfoldingsAndHulls.prototype = {
     start : function () {
       debug('Starting app');
 
-      this.scene.start();
+      var points = Utils.randomPointsInCircle({
+        num    : 5,
+        center : new Vector(250, 250),
+        radius : 100
+      });
+
+      for (var i = 0; i < points.length; i++) {
+        this.view2D.addPoint(points[i]);
+      }
     }
   };
 

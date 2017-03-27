@@ -37,6 +37,8 @@ define(function (require, exports, module) {
       }
 
       var in2D = options.in2D;
+      var min  = options.min;
+      var max  = options.max;
 
       var points = [];
 
@@ -44,9 +46,9 @@ define(function (require, exports, module) {
       var v;
 
       while (points.length !== options.num) {
-        x = this.randomRange(options.min.x, max.x);
-        y = this.randomRange(options.min.y, max.y);
-        z = in2D ? 0.0 : this.randomRange(options.min.z, max.z);
+        x = this.randomRange(min.x, max.x);
+        y = this.randomRange(min.y, max.y);
+        z = in2D ? 0.0 : this.randomRange(min.z, max.z);
 
         v = new Vector(x, y, z);
 
@@ -85,10 +87,15 @@ define(function (require, exports, module) {
 
       while (points.length !== options.num) {
         alpha = this.randomRange(0.0, 2.0 * Math.PI);
-        beta  = in2D ? 0.0 : this.randomRange(0.0, Math.PI);
+        beta  = this.randomRange(0.0, Math.PI);
         r     = this.randomRange(0.0, options.radius);
 
-        v = this.createVectorFromPolar(r, alpha, beta);
+        if (in2D) {
+          v = this.vectoFromPolars(r, alpha);
+        } else {
+          v = this.vectorFromSphericals(r, alpha, beta);
+        }
+
         v.add(options.center);
 
         var store = !options.generalPosition || (points.length < 2 || this.isKeepingGeneralPosition(points, v, in2D));
@@ -179,7 +186,7 @@ define(function (require, exports, module) {
     },
 
     /**
-     * Crea un vector de tres dimensiones a partir de sus coordenadas polares.
+     * Crea un vector resultante de convertir coordenadas esféricas a cartesianas.
      * Ver: https://es.wikipedia.org/wiki/Coordenadas_esf%C3%A9ricas
      *
      * @param  {Number} r     El radio
@@ -187,11 +194,25 @@ define(function (require, exports, module) {
      * @param  {Number} beta  Angulo de latitud
      * @return {Object}       Vector resultante
      */
-    createVectorFromPolar: function (r, alpha, beta) {
+    vectorFromSphericals: function (r, alpha, beta) {
       var x = r * Math.sin(beta) * Math.cos(alpha);
       var y = r * Math.sin(beta) * Math.sin(alpha);
       var z = r * Math.cos(beta);
       return new Vector(x, y, z);
+    },
+
+    /**
+    * Crea un vector resultante de convertir coordenadas polares a cartesianas.
+    * Ver: https://es.wikipedia.org/wiki/Coordenadas_polares
+    *
+     * @param  {Number} r     Radio
+     * @param  {Number} tetha Angulo
+     * @return {Object}       Vector resultante
+     */
+    vectoFromPolars: function (r, tetha) {
+      var x = r * Math.cos(tetha);
+      var y = r * Math.sin(tetha);
+      return new Vector(x, y);
     },
 
     /**

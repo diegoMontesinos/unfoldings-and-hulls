@@ -23,7 +23,7 @@ requirejs.config({
 });
 
 // Carga la aplicacion principal
-requirejs(['jquery', 'UnfoldingsAndHulls'], function ( $, app ) {
+requirejs(['jquery', 'UnfoldingsAndHulls'], function ($, app) {
   'use strict';
 
   $(document).ready(function () {

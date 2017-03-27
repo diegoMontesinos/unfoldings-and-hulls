@@ -11,7 +11,7 @@ define(function (require, exports, module) {
   'use strict';
 
   // Debug ID
-  var debug = require('debug')('app:scene');
+  var debug = require('debug')('app:view-3D');
 
   // Dependencias
   var $     = require('jquery');
@@ -19,8 +19,8 @@ define(function (require, exports, module) {
   require('tbControls');
 
   // Definicion del modulo
-  var Scene = function ( app ) {
-    debug('Setup 3D scene');
+  var View3D = function (app) {
+    debug('Setup view 3D');
 
     this.app = app;
 
@@ -68,14 +68,14 @@ define(function (require, exports, module) {
     this.setupEvents();
   };
 
-  Scene.prototype = {
+  View3D.prototype = {
 
     /***********
      * Metodos *
      ***********/
 
     start: function () {
-      debug('Starting 3D scene');
+      debug('Starting 3D view');
 
       this.animate();
     },
@@ -134,5 +134,5 @@ define(function (require, exports, module) {
   }
 
   // Regresa la definicion del modulo como resultado
-  module.exports = Scene;
+  module.exports = View3D;
 });
