@@ -53,10 +53,10 @@ module.exports = function(grunt) {
   });
 
   // Default task
-  grunt.registerTask( 'default', [ 'serve' ] );
+  grunt.registerTask('default', [ 'serve' ]);
 
   // Serve presentation locally
-  grunt.registerTask( 'serve', [ 'connect', 'watch' ] );
+  grunt.registerTask('serve', [ 'connect', 'watch' ]);
 
   // Check potential errors and idioms
   grunt.registerTask('check', [ 'jshint' ]);

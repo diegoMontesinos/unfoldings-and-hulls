@@ -1,7 +1,7 @@
 {
   "name": "unfoldings-and-hulls",
   "version": "1.0.0",
-  "description": "Implementation and visualizations of some algorithms on convex polyhedron: 3d convex hull and unfoldings.",
+  "description": "Implementation and visualizations of some algorithms on convex polyhedra.",
   "author": "Diego Montesinos",
   "homepage": "https://bitbucket.org/diegoMontesinos/unfoldings-and-hulls",
   "scripts": {
