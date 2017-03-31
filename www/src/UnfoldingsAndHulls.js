@@ -126,7 +126,7 @@ define(function (require, exports, module) {
         return;
       }
 
-      if (hull && !hull.contains(point)) {
+      if (hull && (!hull.contains(point) || (hull.vertices.indexOf(point) != -1))) {
         this.view2D.removePolygon(hullElem);
         this.startAlgorithm();
       }
