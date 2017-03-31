@@ -11,6 +11,8 @@ requirejs.config({
     'jquery'     : 'lib/jquery/jquery',
     'debug'      : 'lib/utils/debug',
 
+    'interact'   : 'lib/utils/interact',
+
     // Three
     'three'      : 'lib/three/three',
     'tbControls' : 'lib/three/controls/TrackballControls'

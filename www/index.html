@@ -12,6 +12,21 @@
     <!-- Style sheets -->
     <link rel="stylesheet" href="css/vendor/normalize.css">
     <link rel="stylesheet" href="css/main.css">
+    <style media="screen">
+      .viewport-container {
+        width: 600px;
+        height: 600px;
+
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 20px;
+        position: relative;
+      }
+
+      div#info {
+        margin: 0;
+      }
+    </style>
   </head>
 
   <body oncontextmenu="return false;">
@@ -22,7 +37,15 @@
       </div>
 
       <div class="viewport-container">
-        <svg id="viewport-2D" version="1.1" xmlns="http://www.w3.org/2000/svg" width="500" height="500">
+        <div id="info">
+          <p>
+            <b>Status:</b><span class="status"></span><br />
+            <b>Index:</b><span class="index"></span><br />
+            <input type="checkbox" name="show-steps" checked> Mostrar los pasos<br>
+          </p>
+        </div>
+
+        <svg id="viewport-2D" version="1.1" xmlns="http://www.w3.org/2000/svg" width="600" height="600">
         </svg>
       </div>
     </div>
