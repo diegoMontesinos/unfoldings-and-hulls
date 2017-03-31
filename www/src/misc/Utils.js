@@ -8,10 +8,8 @@
 define(function (require, exports, module) {
   'use strict';
 
-  // Dependencias
   var Vector = require('math/Vector');
 
-  // Definicion del modulo
   var Utils = {
 
     /**
@@ -52,7 +50,7 @@ define(function (require, exports, module) {
 
         v = new Vector(x, y, z);
 
-        var store = !options.generalPosition || (points.length < 2 || this.isKeepingGeneralPosition(points, v, in2D));
+        var store = !options.gralPosition || (points.length < 2 || this.isKeepingGeneralPosition(points, v, in2D));
         if (store) {
           points.push(v);
         }
@@ -98,7 +96,7 @@ define(function (require, exports, module) {
 
         v.add(options.center);
 
-        var store = !options.generalPosition || (points.length < 2 || this.isKeepingGeneralPosition(points, v, in2D));
+        var store = !options.gralPosition || (points.length < 2 || this.isKeepingGeneralPosition(points, v, in2D));
         if (store) {
           points.push(v);
         }
@@ -167,15 +165,15 @@ define(function (require, exports, module) {
       for (var i = 0; i < len; i++) {
         for (var j = (i + 1); j < len; j++) {
           if (in2D) {
-            if (Vector.areColinear(points[i], points[j], point)) {
-              return false
+            if (Vector.areCollinear(points[i], points[j], vector)) {
+              return false;
             }
 
             continue;
           }
 
           for (var k = (j + 1); k < len; k++) {
-            if (Vector.areCoplanar(points[i], points[j], points[k], point)) {
+            if (Vector.areCoplanar(points[i], points[j], points[k], vector)) {
               return false;
             }
           }
@@ -232,6 +230,5 @@ define(function (require, exports, module) {
     exports = {};
   }
 
-  // Regresa la definicion del modulo como resultado
   module.exports = Utils;
 });

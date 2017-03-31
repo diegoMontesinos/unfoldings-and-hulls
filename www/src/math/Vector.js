@@ -1,8 +1,8 @@
 /**
  * Representa a un vector en el espacio. También se puede ocupar (como en gran
  * parte de este proyecto) para representar a un punto.
- * A pesar de que tiene tres coordenadas, si se hace z = 0, puede ser un vector
- * en el plano.
+ * A pesar de que tiene tres coordenadas, omitiendo la tercera (z = 0), hace que
+ * el vector esté en el plano.
  *
  * ------
  * Diego Montesinos [diegoMontesinos@ciencias.unam.mx]
@@ -11,7 +11,16 @@
 define(function (require, exports, module) {
   'use strict';
 
-  // Constructor
+  var EPSILON = 1e-11;
+
+  /**
+   * Construye un vector dadas sus coordenadas.
+   *
+   * @param  {Number} x  Coordenada x del vector.
+   * @param  {Number} y  Coordenada y del vector.
+   * @param  {Number} z  Coordenada z del vector.
+   * @return {Object}    El vector construido.
+   */
   var Vector = function (x, y, z) {
     this.x = x || 0;
     this.y = y || 0;
@@ -19,60 +28,24 @@ define(function (require, exports, module) {
   };
 
   /**
-   * Calcula el volumen con signo del paralelepipedo derivado por cuatro
-   * puntos.
+   * Evalua si el vector que invoca la función es igual a otro dado.
    *
-   * Este calculo se basa en el triple producto vectorial, eliminando uno de los
-   * vectores llevandolo al origen (restandoselo a los otros). Esto es:
-   * ((a - d) x (b - d)) x (c - d)
-   *
-   * @param  { Object } a Primer vertice
-   * @param  { Object } b Segundo vertice
-   * @param  { Object } c Tercer vertice
-   * @param  { Object } d Cuarto vertice
-   * @return { Number }   Volumen con signo
+   * @param  {Object} v  El vector dado.
+   * @return {Boolean}   Si los vectores son iguales.
    */
-  Vector.volume3 = function (a, b, c, d) {
-
-    // Transladamos los puntos para que d quede en el origen
-    var ax = (a.x - d.x), ay = (a.y - d.y), az = (a.z - d.z);
-    var bx = (b.x - d.x), by = (b.y - d.y), bz = (b.z - d.z);
-    var cx = (c.x - d.x), cy = (c.y - d.y), cz = (c.z - d.z);
-
-    var vol = ax * (by * cz - bz * cy) +
-              ay * (bz * cx - bx * cz) +
-              az * (bx * cy - by * cx);
-
-    return vol;
-  };
-
-  Vector.volumeSign = function (a, b, c, d) {
-    var volume = Vector.volume3(a, b, c, d);
-    if (volume < -0.5) {
-      return -1;
-    } else if (volume > 0.5) {
-      return 1;
-    } else {
-      return 0;
-    }
-  };
-
-  Vector.areCoplanar = function (a, b, c, d) {
-    return Vector.volumeSign(a, b, c, d) === 0;
-  };
-
   Vector.prototype.equals = function (v) {
-    var epsilon = 1e-10;
-    return Math.abs(this.x - v.x) <= epsilon &&
-           Math.abs(this.y - v.y) <= epsilon &&
-           Math.abs(this.z - v.z) <= epsilon;
+    return Math.abs(this.x - v.x) <= EPSILON &&
+           Math.abs(this.y - v.y) <= EPSILON &&
+           Math.abs(this.z - v.z) <= EPSILON;
   };
 
   /**
    * Comparador lexicografico.
+   * Compara primero por la coordenada x, si son iguales, compara por la y o por
+   * la z.
    *
-   * @param  { Object } v   Un Vector para comparar
-   * @return { Number }     El resultado de la comparacion:
+   * @param  {Object} v  Un Vector para comparar
+   * @return {Number}    El resultado de la comparacion:
    *                          0 si son iguales,
    *                          < 0 si este vector es menor que el pasado
    *                          > 0 si este vector es mayo que el pasado
@@ -83,20 +56,18 @@ define(function (require, exports, module) {
       diff = diff === 0.0 ? this.y - v.y : diff;
       diff = diff === 0.0 ? this.z - v.z : diff;
 
-      if (diff !== 0) {
-        return diff / Math.abs(diff);
-      }
+      return diff;
     }
 
     return 0;
   };
 
   /**
-   * Calcula el vector resultante de proyectar
-   * este vector sobre otro dado.
+   * Calcula el vector resultante de proyectar el vector que invoca la función
+   * sobre otro dado.
    *
-   * @param  { Object } v El vector a proyectar
-   * @return { Object }   La proyeccion del vector
+   * @param  {Object} v  El vector a proyectar.
+   * @return {Object}    La proyeccion del vector.
    */
   Vector.prototype.projectOn = function (v) {
     if (v.length() !== 1.0) {
@@ -112,16 +83,157 @@ define(function (require, exports, module) {
     return new Vector(x, y, z);
   };
 
+  /**
+   * Calcula el producto punto del vector que invoca la función con otro dado.
+   *
+   * @param  {Object} v  El otro vector dado.
+   * @return {Number}    El producto punto calculado.
+   */
+  Vector.prototype.dot = function (v) {
+    return (this.x * v.x) + (this.y * v.y);
+  };
+
+  /**
+   * Suma un vector al vector que invoca la funcion.
+   *
+   * @param  {Object} v [description]
+   */
   Vector.prototype.add = function (v) {
     this.x += v.x;
     this.y += v.y;
-    this.z += v.z;    
+    this.z += v.z;
+  };
+
+  /**
+   * Calcula el area con signo del paralelogramo derivado por tres puntos.
+   *
+   * Este calculo se basa en el producto vectorial, o producto cruz, eliminando
+   * uno de los vectores llevandolo al origen (restandoselo a los otros). Esto es:
+   * (a - c) x (b - c).
+   *
+   * @param  {Object} a  Primer vertice.
+   * @param  {Object} b  Primer vertice.
+   * @param  {Object} c  Primer vertice.
+   * @return {Number}    El área con signo del paralelogramo.
+   */
+  Vector.area2 = function (a, b, c) {
+    var ax = (a.x - c.x), ay = (a.y - c.y);
+    var bx = (b.x - c.x), by = (b.y - c.y);
+
+    var area = (ax * by) - (ay * bx);
+    return area;
+  };
+
+  /**
+   * Función de ayuda para comparaciones, u operaciones basadas en el giro que da
+   * una linea dirigida de un vector a, a un vecto b, dirigiendose a un vector c.
+   *
+   * En realidad es un alias de la función Vector.area2, pero permite redondeo de
+   * una epsilon para evitar errores de aproximación.
+   *
+	 * 0 : colineal
+	 * - : vuelta a la izquierda
+	 * + : vuelta a la derecha
+   *
+   * @param  {Object} a  Primer vertice.
+   * @param  {Object} b  Primer vertice.
+   * @param  {Object} c  Primer vertice.
+   * @return {Number}    El signo de la vuelta.
+   */
+  Vector.areaSign = function (a, b, c) {
+    var area = Vector.area2(a, b, c);
+    if (area < -EPSILON) {
+      return -1;
+    } else if (area > EPSILON) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
+
+  /**
+   * Evalua si tres puntos dados son colineales o no.
+   *
+   * @param  {Object} a  Primer vertice.
+   * @param  {Object} b  Primer vertice.
+   * @param  {Object} c  Primer vertice.
+   * @return {Boolean}   Si son colineales o no.
+   */
+  Vector.areCollinear = function (a, b, c) {
+    return Vector.areaSign(a, b, c) === 0;
+  };
+
+  /**
+   * Calcula el volumen con signo del paralelepipedo derivado por cuatro
+   * puntos.
+   *
+   * Este calculo se basa en el triple producto vectorial, eliminando uno de los
+   * vectores llevandolo al origen (restandoselo a los otros). Esto es:
+   * ((a - d) x (b - d)) x (c - d)
+   *
+   * @param  {Object} a  Primer vertice
+   * @param  {Object} b  Segundo vertice
+   * @param  {Object} c  Tercer vertice
+   * @param  {Object} d  Cuarto vertice
+   * @return {Number}    Volumen con signo
+   */
+  Vector.volume3 = function (a, b, c, d) {
+    var ax = (a.x - d.x), ay = (a.y - d.y), az = (a.z - d.z);
+    var bx = (b.x - d.x), by = (b.y - d.y), bz = (b.z - d.z);
+    var cx = (c.x - d.x), cy = (c.y - d.y), cz = (c.z - d.z);
+
+    var vol = ax * (by * cz - bz * cy) +
+              ay * (bz * cx - bx * cz) +
+              az * (bx * cy - by * cx);
+
+    return vol;
+  };
+
+  /**
+   * Función de ayuda para comparaciones, u operaciones basadas en saber si un
+   * punto c esta en el semiespacio apuntado por la normal (de frente) del plano
+   * generado por los puntos a, b, c (siguiendo la regla de la mano derecha).
+   *
+   * En realidad es un alias de la función Vector.volume3, pero permite redondeo
+   * de una epsilon para evitar errores de aproximación.
+   *
+	 * 0 : coplanar
+	 * - : detras de la normal
+	 * + : de frente a la normal
+   *
+   * @param  {Object} a  Primer vertice.
+   * @param  {Object} b  Primer vertice.
+   * @param  {Object} c  Primer vertice.
+   * @param  {Object} d  Cuarto vertice
+   * @return {Number}    El signo contra la normal.
+   */
+  Vector.volumeSign = function (a, b, c, d) {
+    var volume = Vector.volume3(a, b, c, d);
+    if (volume < -0.5) {
+      return -1;
+    } else if (volume > 0.5) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
+
+  /**
+   * Evalua si cuatro puntos son coplanares.
+   *
+   * @param  {Object} a  Primer vertice.
+   * @param  {Object} b  Primer vertice.
+   * @param  {Object} c  Primer vertice.
+   * @param  {Object} d  Cuarto vertice
+   * @return {Boolean}   Si son coplanares o no.
+   */
+  Vector.areCoplanar = function (a, b, c, d) {
+    return Vector.volumeSign(a, b, c, d) === 0;
   };
 
   if (!exports) {
     exports = {};
   }
 
-  // Regresa la definicion del modulo como resultado
   module.exports = Vector;
 });
