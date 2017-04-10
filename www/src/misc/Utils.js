@@ -8,10 +8,8 @@
 define(function (require, exports, module) {
   'use strict';
 
-  // Dependencias
-  var Vector3 = require('math/Vector3');
+  var Vector = require('math/Vector');
 
-  // Definicion del modulo
   var Utils = {
 
     /**
@@ -23,26 +21,36 @@ define(function (require, exports, module) {
      * min.y <= y <= max.y
      * min.z <= z <= max.z
      *
-     * @param  { Number }  n               El numero de puntos que se desean
-     * @param  { Object }  minVec          El vector minimo (Vector3)
-     * @param  { Object }  maxVec          El vector máximo (Vector3)
-     * @param  { Boolean } generalPosition Si se desea posicion general
-     * @return { Array }                   El conjunto generado
+     * @param  {Object}  options              Las opciones para el conjunto de puntos
+     * @param  {Number}  options.num          El numero de puntos que se desean
+     * @param  {Object}  options.min          El vector minimo (Vector)
+     * @param  {Object}  options.max          El vector máximo (Vector)
+     * @param  {Boolean} options.gralPosition Si se desea posicion general
+     * @param  {Boolean} options.in2D         Si el conjunto está en dos dimensiones
+     * @return {Array}                        El conjunto generado
      */
-    randomPointsInBox: function ( n, minVec, maxVec, generalPosition ) {
+    randomPointsInBox: function (options) {
+      if (options.num < 0) {
+        return undefined;
+      }
+
+      var in2D = options.in2D;
+      var min  = options.min;
+      var max  = options.max;
+
       var points = [];
 
       var x, y, z;
       var v;
 
-      while (points.length !== n) {
-        x = this.randomRange(minVec.x, maxVec.x);
-        y = this.randomRange(minVec.y, maxVec.y);
-        z = this.randomRange(minVec.z, maxVec.z);
+      while (points.length !== options.num) {
+        x = this.randomRange(min.x, max.x);
+        y = this.randomRange(min.y, max.y);
+        z = in2D ? 0.0 : this.randomRange(min.z, max.z);
 
-        v = new Vector3(x, y, z);
+        v = new Vector(x, y, z);
 
-        var store = !generalPosition || (points.length < 2 || this.isKeepingGeneralPosition(points, v));
+        var store = !options.gralPosition || (points.length < 2 || this.isKeepingGeneralPosition(points, v, in2D));
         if (store) {
           points.push(v);
         }
@@ -55,27 +63,40 @@ define(function (require, exports, module) {
      * Crea un conjunto de n puntos aleatorios de tercera dimensión contenidos
      * en una esfera dada por un centro y un radio.
      *
-     * @param  { Number }  n               El numero de puntos que se desean
-     * @param  { Object }  center          El centro de la esfera (Vector3)
-     * @param  { Number }  radius          El radio de la esfera
-     * @param  { Boolean } generalPosition Si se desea posicion general
-     * @return { Array }                   El conjunto generado
+     * @param  {Object}  options              Las opciones para el conjunto de puntos
+     * @param  {Number}  options.num          El numero de puntos que se desean
+     * @param  {Object}  options.center       El centro de la esfera (Vector)
+     * @param  {Number}  options.radius       El radio de la esfera
+     * @param  {Boolean} options.gralPosition Si se desea posicion general
+     * @param  {Boolean} options.in2D         Si el conjunto está en dos dimensiones
+     * @return {Array}                        El conjunto generado
      */
-    randomPointsInSphere: function ( n, center, radius, generalPosition ) {
+    randomPointsInSphere: function (options) {
+      if (options.num < 0) {
+        return undefined;
+      }
+
+      var in2D = options.in2D;
+
       var points = [];
 
       var alpha, beta, r;
       var v;
 
-      while (points.length !== n) {
+      while (points.length !== options.num) {
         alpha = this.randomRange(0.0, 2.0 * Math.PI);
         beta  = this.randomRange(0.0, Math.PI);
-        r     = this.randomRange(0.0, radius);
+        r     = this.randomRange(0.0, options.radius);
 
-        v = this.createVector3FromPolar(r, alpha, beta);
-        v.add(center);
+        if (in2D) {
+          v = this.vectoFromPolars(r, alpha);
+        } else {
+          v = this.vectorFromSphericals(r, alpha, beta);
+        }
 
-        var store = !generalPosition || (points.length < 2 || this.isKeepingGeneralPosition(points, v));
+        v.add(options.center);
+
+        var store = !options.gralPosition || (points.length < 2 || this.isKeepingGeneralPosition(points, v, in2D));
         if (store) {
           points.push(v);
         }
@@ -85,19 +106,74 @@ define(function (require, exports, module) {
     },
 
     /**
-     * Prueba si un punto mantiene o no la posicion general en un conjunto de
-     * puntos que ya lo esta.
+     * Crea un conjunto de n puntos aleatorios de dos dimensiones contenidos en
+     * un rectangulo creada por dos vectores min y max.
      *
-     * @param  { Array }  points Un conjunto de puntos que esta en posicion general
-     * @param  { Object }  vec   Punto a probar (es un Vector3)
-     * @return { Boolean }       Si el punto mantiene o no la posicion general
+     * Los puntos generados son tales que cada una de sus coordenadas:
+     * min.x <= x <= max.x
+     * min.y <= y <= max.y
+     *
+     * @param  {Object}  options              Las opciones para el conjunto de puntos
+     * @param  {Number}  options.num          El numero de puntos que se desean
+     * @param  {Object}  options.min          El vector minimo (Vector)
+     * @param  {Object}  options.max          El vector máximo (Vector)
+     * @param  {Boolean} options.gralPosition Si se desea posicion general
+     * @return {Array}                        El conjunto generado
      */
-    isKeepingGeneralPosition: function ( points, vec ) {
+    randomPointsInRect: function (options) {
+      return this.randomPointsInBox({
+        num          : options.num,
+        min          : options.min,
+        max          : options.max,
+        gralPosition : options.gralPosition,
+        in2D         : true
+      });
+    },
+
+    /**
+     * Crea un conjunto de n puntos aleatorios de dos dimensiones contenidos
+     * en una circulo dado por su radio y su centro.
+     *
+     * @param  {Object}  options              Las opciones para el conjunto de puntos
+     * @param  {Number}  options.num          El numero de puntos que se desean
+     * @param  {Object}  options.center       El centro de la esfera (Vector)
+     * @param  {Number}  options.radius       El radio de la esfera
+     * @param  {Boolean} options.gralPosition Si se desea posicion general
+     * @return {Array}                        El conjunto generado
+     */
+    randomPointsInCircle: function (options) {
+      return this.randomPointsInSphere({
+        num          : options.num,
+        center       : options.center,
+        radius       : options.radius,
+        gralPosition : options.gralPosition,
+        in2D         : true
+      });
+    },
+
+    /**
+     * Prueba si un punto mantiene o no la posicion general en un conjunto de
+     * puntos que ya lo esta si fuera añadido.
+     *
+     * @param  {Array}   points  Un conjunto de puntos que esta en posicion general
+     * @param  {Object}  point   Punto a probar (es un Vector)
+     * @param  {Boolean} in2D    Si está en dos dimensiones (se prueba colinearidad)
+     * @return {Boolean}         Si el punto mantiene o no la posicion general
+     */
+    isKeepingGeneralPosition: function (points, vector, in2D) {
       var len = points.length;
       for (var i = 0; i < len; i++) {
         for (var j = (i + 1); j < len; j++) {
+          if (in2D) {
+            if (Vector.areCollinear(points[i], points[j], vector)) {
+              return false;
+            }
+
+            continue;
+          }
+
           for (var k = (j + 1); k < len; k++) {
-            if (Vector3.areCoplanar(points[i], points[j], points[k], vec)) {
+            if (Vector.areCoplanar(points[i], points[j], points[k], vector)) {
               return false;
             }
           }
@@ -108,22 +184,43 @@ define(function (require, exports, module) {
     },
 
     /**
-     * Crea un vector de tres dimensiones a partir de sus coordenadas polares.
+     * Crea un vector resultante de convertir coordenadas esféricas a cartesianas.
      * Ver: https://es.wikipedia.org/wiki/Coordenadas_esf%C3%A9ricas
      *
-     * @param  { Number } r     El radio
-     * @param  { Number } alpha Angulo de longitud
-     * @param  { Number } beta  Angulo de latitud
-     * @return { Object }       Vector resultante
+     * @param  {Number} r     El radio
+     * @param  {Number} alpha Angulo de longitud
+     * @param  {Number} beta  Angulo de latitud
+     * @return {Object}       Vector resultante
      */
-    createVector3FromPolar: function ( r, alpha, beta ) {
+    vectorFromSphericals: function (r, alpha, beta) {
       var x = r * Math.sin(beta) * Math.cos(alpha);
       var y = r * Math.sin(beta) * Math.sin(alpha);
       var z = r * Math.cos(beta);
-      return new Vector3(x, y, z);
+      return new Vector(x, y, z);
     },
 
-    randomRange: function ( start, end ) {
+    /**
+    * Crea un vector resultante de convertir coordenadas polares a cartesianas.
+    * Ver: https://es.wikipedia.org/wiki/Coordenadas_polares
+    *
+     * @param  {Number} r     Radio
+     * @param  {Number} tetha Angulo
+     * @return {Object}       Vector resultante
+     */
+    vectoFromPolars: function (r, tetha) {
+      var x = r * Math.cos(tetha);
+      var y = r * Math.sin(tetha);
+      return new Vector(x, y);
+    },
+
+    /**
+     * Genera un numero aleatorio entre un rango dado.
+     *
+     * @param  {Number} start Inicio del rango
+     * @param  {Number} end   Final del rango
+     * @return {Number}       El numero aleatorio generado
+     */
+    randomRange: function (start, end) {
       var range = end - start;
       return (Math.random() * range) + start;
     }
@@ -133,6 +230,5 @@ define(function (require, exports, module) {
     exports = {};
   }
 
-  // Regresa la definicion del modulo como resultado
   module.exports = Utils;
 });

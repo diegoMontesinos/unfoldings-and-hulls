@@ -11,6 +11,8 @@ requirejs.config({
     'jquery'     : 'lib/jquery/jquery',
     'debug'      : 'lib/utils/debug',
 
+    'interact'   : 'lib/utils/interact',
+
     // Three
     'three'      : 'lib/three/three',
     'tbControls' : 'lib/three/controls/TrackballControls'
@@ -23,7 +25,7 @@ requirejs.config({
 });
 
 // Carga la aplicacion principal
-requirejs(['jquery', 'UnfoldingsAndHulls'], function ( $, app ) {
+requirejs(['jquery', 'UnfoldingsAndHulls'], function ($, app) {
   'use strict';
 
   $(document).ready(function () {
