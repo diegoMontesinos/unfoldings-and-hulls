@@ -6,18 +6,28 @@ module.exports = function(grunt) {
   require('time-grunt')(grunt);
   require('load-grunt-tasks')(grunt);
 
-  // configurable vars
-  var port = grunt.option('port') || 8000;
-  var base = grunt.option('base') || 'www';
-
   // Project configuration
   grunt.initConfig({
     connect: {
-      server: {
+      test: {
         options: {
-          port: port,
-          base: base,
+          port: 8000,
+          base: {
+            path: '.',
+            options: {
+              index: 'test/runner.html'
+            }
+          },
           livereload: true,
+          open: true
+        }
+      },
+
+      www: {
+        options: {
+          port: 8000,
+          base: 'www',
+          livereload: false,
           open: true
         }
       }
@@ -25,13 +35,13 @@ module.exports = function(grunt) {
 
     watch: {
       js: {
-        files: [ 'www/src/**/*.js' ]
+        files: [ 'www/src/**/*.js', 'test/tests/**/*.js' ]
       },
       css: {
-        files: [ 'www/css/**/*.css' ]
+        files: [ 'www/css/**/*.css', 'test/css/**/*.css' ]
       },
       html: {
-        files: [ 'www/*.html']
+        files: [ 'www/*.html', 'test/*.html' ]
       },
       markdown: {
         files: [ '*.md' ]
@@ -56,8 +66,11 @@ module.exports = function(grunt) {
   grunt.registerTask('default', [ 'serve' ]);
 
   // Serve presentation locally
-  grunt.registerTask('serve', [ 'connect', 'watch' ]);
+  grunt.registerTask('serve', [ 'connect:www', 'watch' ]);
 
   // Check potential errors and idioms
   grunt.registerTask('check', [ 'jshint' ]);
+
+  // Open the tests and chek idioms
+  grunt.registerTask('test', [ 'connect:test', 'watch' ]);
 };
