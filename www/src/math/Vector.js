@@ -11,7 +11,7 @@
 define(function (require, exports, module) {
   'use strict';
 
-  var EPSILON = 1e-11;
+  var EPSILON = 1e-12;
 
   /**
    * Construye un vector dadas sus coordenadas.
@@ -37,29 +37,6 @@ define(function (require, exports, module) {
     return Math.abs(this.x - v.x) <= EPSILON &&
            Math.abs(this.y - v.y) <= EPSILON &&
            Math.abs(this.z - v.z) <= EPSILON;
-  };
-
-  /**
-   * Comparador lexicografico.
-   * Compara primero por la coordenada x, si son iguales, compara por la y o por
-   * la z.
-   *
-   * @param  {Object} v  Un Vector para comparar
-   * @return {Number}    El resultado de la comparacion:
-   *                          0 si son iguales,
-   *                          < 0 si este vector es menor que el pasado
-   *                          > 0 si este vector es mayo que el pasado
-   */
-  Vector.prototype.compareTo = function (v) {
-    if (!this.equals(v)) {
-      var diff = this.x - v.x;
-      diff = diff === 0.0 ? this.y - v.y : diff;
-      diff = diff === 0.0 ? this.z - v.z : diff;
-
-      return diff;
-    }
-
-    return 0;
   };
 
   /**
@@ -96,7 +73,7 @@ define(function (require, exports, module) {
   /**
    * Suma un vector al vector que invoca la funcion.
    *
-   * @param  {Object} v [description]
+   * @param  {Object} v  El vector a sumar.
    */
   Vector.prototype.add = function (v) {
     this.x += v.x;
@@ -229,6 +206,41 @@ define(function (require, exports, module) {
    */
   Vector.areCoplanar = function (a, b, c, d) {
     return Vector.volumeSign(a, b, c, d) === 0;
+  };
+
+  /**
+   * Devuelve una función comparadora de vectores por un eje dado.
+   * Es decir, regresa un comparador para vectores basado en una coordenada
+   * dada.
+   *
+   * @param  {String} axis  La coordenada a comparar: 'x', 'y' o 'z'.
+   * @return {Function}     El comparador.
+   */
+  Vector.comparatorByAxis = function (axis) {
+    return function (v0, v1) {
+      return (v0[axis] - v1[axis]);
+    };
+  };
+
+  /**
+   * Comparador lexicografico de vectores.
+   * Primero los compara por su coordenada 'x'.
+   * En caso de tener el mismo valor en 'x', los compara con 'y'.
+   * En caso de tener el mismo valor en 'y', los compara con 'z'.
+   *
+   * @param  {Object} v0 Un vector a comparar.
+   * @param  {Object} v1 El otro vector a comparar.
+   * @return {Number}    El resultado de la comparacion:
+   *                          0 si son iguales,
+   *                          < 0 si v0 es mayor que v1,
+   *                          > 0 si v0 es menor que v1.
+   */
+  Vector.lexicographicalComparator = function (v0, v1) {
+    var difference = v0.x - v1.x;
+    difference = (difference === 0.0) ? (v0.y - v1.y) : difference;
+    difference = (difference === 0.0) ? (v0.z - v1.z) : difference;
+
+    return difference;
   };
 
   if (!exports) {
