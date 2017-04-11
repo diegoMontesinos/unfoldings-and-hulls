@@ -16,7 +16,7 @@ define(function (require, exports, module) {
   var Vector = require('math/Vector');
 
   var Polygon = function (vertices) {
-    this.vertices = vertices;
+    this.vertices = vertices || [];
   };
 
   /**
