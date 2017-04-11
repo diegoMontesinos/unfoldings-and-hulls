@@ -1,13 +1,14 @@
 /**
  * Implementación del algoritmo "Incremental" para calcular el cierre convexo de
- * una conjunto finito de puntos en el plano.
+ * una conjunto finito de puntos en el plano (S).
  *
- * El cierre convexo de un conjunto finito de puntos S es la mínima región convexa
- * que contiene a S.
+ * La idea de este algoritmo es que el cierre convexo se vaya calculando iterativamente,
+ * es decir, en cada iteración se tiene una solución parcial para un subconjunto
+ * de S y se incrementa la solución añadiendo un punto. De ahí el nombre.
  *
- * Las funciones de este módulo representan los pasos importantes del algoritmo,
- * y están pensadas para que se puedan ocupar de forma independiente. O también
- * existe la función "run", para calcular el cierre convexo en una sola llamada.
+ * Primero comienza con un triángulo formado por los primeros tres puntos de S,
+ * al que llamamos H_{3}. Y luego para el resto de puntos, en cada iteración
+ * se tiene la solución calculada H_{i} y se calcula la unión con el punto.
  *
  * ------
  * Diego Montesinos [diegoMontesinos@ciencias.unam.mx]
@@ -16,26 +17,23 @@
 define(function (require, exports, module) {
   'use strict';
 
-  var Vector  = require('math/Vector');
-  var Polygon = require('geom/Polygon');
+  var _            = require('underscore');
+  var ConvexHull2D = require('algorithms/ch2D/ConvexHull2D');
 
   var IncrementalCH2D = {
 
     /**
      * Ejecuta el algoritmo "incremental" para calcular el cierre convexo.
      *
-     * Esta implementación ocupa un polígono para representar al cierre convexo,
-     * manteniendo a los vértices en una lista.
-     *
      * @param  {Array} input  El conjunto de puntos de entrada.
      * @return {Object}       El cierre convexo calculado, como un polígono.
      */
     run: function (input) {
-      if (input.length < 3) {
+      if (!this.validateInput(input)) {
         return undefined;
       }
 
-      var hull = this.makeFirstHull(input);
+      var hull = this.makeTriangle(input);
 
       for (var i = 3; i < input.length; i++) {
         var point = input[i];
@@ -45,29 +43,6 @@ define(function (require, exports, module) {
       }
 
       return hull;
-    },
-
-    /**
-     * Primer paso del algoritmo incremental.
-     * Genera el cierre convexo de los primeros tres puntos del conjunto de entrada,
-     * es decir, un triángulo: H_{3}.
-     *
-     * @param  {Array} input  El conjunto de puntos de entrada.
-     * @return {Object}       El primer polígono para el algoritmo.
-     */
-    makeFirstHull: function (input) {
-      var a = input[0],
-          b = input[1],
-          c = input[2];
-
-      var vertices;
-      if (Vector.areaSign(a, b, c) < 0) {
-        vertices = [a, b, c];
-      } else {
-        vertices = [a, c, b];
-      }
-
-      return new Polygon(vertices);
     },
 
     /**
@@ -119,38 +94,16 @@ define(function (require, exports, module) {
      * @return {Number}                 El ínice del vértice dentro del polígono.
      */
     indexOfSupportVertex: function (hull, point, ofLeftTangent) {
-      var vertices = hull.vertices;
-      var size     = vertices.length;
-
-      var current, last, next;
-
-      var turnToLast, turnToNext;
-      var sameTurn;
-
-      var isSupportVertex;
-
-      for (var i = 1; i <= size; i++) {
-        last    = vertices[i - 1];
-        current = vertices[i % size];
-        next    = vertices[(i + 1) % size];
-
-        turnToLast = Vector.areaSign(point, current, last);
-        turnToNext = Vector.areaSign(point, current, next);
-
-        sameTurn = (turnToLast * turnToNext) > 0;
-        if (!sameTurn) {
-          continue;
-        }
-
-        isSupportVertex = ((turnToNext < 0) && !ofLeftTangent) || ((turnToNext > 0) && ofLeftTangent);
-        if (isSupportVertex) {
-          return (i % size);
+      for (var i = 0; i < hull.vertices.length; i++) {
+        if (this.isTangentLine(point, i, hull, ofLeftTangent)) {
+          return i;
         }
       }
 
       return -1;
     }
   };
+  _.extend(IncrementalCH2D, ConvexHull2D);
 
   if (!exports) {
     exports = {};

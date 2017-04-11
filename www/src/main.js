@@ -8,10 +8,8 @@ requirejs.config({
   paths: {
 
     // Utils
-    'jquery'     : 'lib/jquery/jquery',
     'debug'      : 'lib/utils/debug',
-
-    'interact'   : 'lib/utils/interact',
+    'underscore' : 'lib/utils/underscore',
 
     // Three
     'three'      : 'lib/three/three',
@@ -25,10 +23,8 @@ requirejs.config({
 });
 
 // Carga la aplicacion principal
-requirejs(['jquery', 'UnfoldingsAndHulls'], function ($, app) {
+requirejs(['UnfoldingsAndHulls'], function (app) {
   'use strict';
 
-  $(document).ready(function () {
-    app.start();
-  });
+  app.start();
 });
