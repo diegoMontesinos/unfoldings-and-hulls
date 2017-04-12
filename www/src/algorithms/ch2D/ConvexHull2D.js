@@ -35,6 +35,27 @@ define(function (require, exports, module) {
     },
 
     /**
+     * Obtiene el índice del punto más bajo (mínimo por Y) de un conjunto de
+     * puntos, dado como arreglo.
+     *
+     * @param  {Array} points  El arreglo de puntos.
+     * @return {Number}        El índice del arreglo de puntos.
+     */
+    indexOfMinPointByY: function (points) {
+      var min, indexOfMin;
+
+      for (var i = 0; i < points.length; i++) {
+        var point = points[i];
+        if (!min || (point.y < min.y)) {
+          min = point;
+          indexOfMin = i;
+        }
+      }
+
+      return indexOfMin;
+    },
+
+    /**
      * Crea un triángulo con los primeros tres puntos de un arreglo de puntos
      * dados.
      * El triángulo está bien formado, es decir, el recorrido de las aristas
