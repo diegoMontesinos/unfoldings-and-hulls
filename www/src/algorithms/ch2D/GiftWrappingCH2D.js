@@ -1,15 +1,17 @@
 /**
  * Implementación del algoritmo "Envoltura de regalo" (también conocido como
- * "marcha de Jarvis"), para calcular el cierre convexo de una conjunto finito
- * de puntos en el plano (S).
+ * "marcha de Jarvis"), para calcular el cierre convexo de un conjunto finito de
+ * puntos en el plano (S).
  *
  * Como el nombre lo indica muy bien, la idea de este algoritmo es envolver con
  * un hilo (o línea) a todos los puntos de S, justo como si envolvieramos un
  * regalo.
  * Al ir envolviendo a S, la linea se va "doblando" cada vez que encuentra un
  * punto extremo. Estos puntos son los vértices del borde del cierre convexo.
- *
  * Todo el trabajo del algoritmo reside en encontrar a estos puntos.
+ *
+ * El algoritmo tiene una complejidad de O(nh), donde h es el número de aristas
+ * del cierre convexo, pero es O(n^2) en el peor de los casos, cuando h = n.
  *
  * ------
  * Diego Montesinos [diegoMontesinos@ciencias.unam.mx]
@@ -52,7 +54,7 @@ define(function (require, exports, module) {
      * cierre convexo para comenzar a envolver (puede ocuparse el mínimo en Y).
      *
      * @param  {Object} firstPoint  El primer punto en el borde del cierre convexo.
-     * @param  {Array} points       El conjunto de puntos.
+     * @param  {Array}  points      El conjunto de puntos.
      * @return {Array}              Los vértices del borde del cierre convexo.
      */
     findWrappingVertices: function (firstPoint, points) {
@@ -84,7 +86,7 @@ define(function (require, exports, module) {
      * Por lo tanto, es fácil encontrarlo verificando esta última propiedad.
      *
      * @param  {Object} lastPoint  El último punto de la envoltura.
-     * @param  {Array} points      El conjunto de puntos.
+     * @param  {Array}  points     El conjunto de puntos.
      * @return {Object}            El siguiente punto en la envolutra.
      */
     nextPointInWrapping: function (lastPoint, points) {

@@ -1,6 +1,6 @@
 /**
  * Implementación del algoritmo "Escaneo de Graham", para calcular el cierre convexo
- * de una conjunto finito de puntos en el plano (S).
+ * de un conjunto finito de puntos en el plano (S).
  *
  * La idea de este algoritmo, publicada en 1972 por Ronald Graham, es crear un
  * polígono no convexo P, con todos los puntos de S, y luego "corregir" las aristas
@@ -14,6 +14,8 @@
  * Después, se recorre el borde de P, tomando tripletas y quitando los vértices
  * de P que rompen su convexidad. Al finalizar P es el borde del cierre convexo
  * de S.
+ *
+ * El algoritmo tiene una complejidad de O(n log n).
  *
  * ------
  * Diego Montesinos [diegoMontesinos@ciencias.unam.mx]
@@ -53,7 +55,7 @@ define(function (require, exports, module) {
      * y el resto, los otros puntos odenados.
      *
      * @param  {Number} indexOfMinPointByY  El índice del punto mas bajo dentro del arreglo.
-     * @param  {Array} input                El conjunto de entrada.
+     * @param  {Array}  input               El conjunto de entrada.
      * @return {Array}                      El conjunto ordenado por pendiente.
      */
     sortPointsBySlope: function (indexOfMinPointByY, input) {

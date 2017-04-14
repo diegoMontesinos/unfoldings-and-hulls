@@ -1,6 +1,6 @@
 /**
- * El cierre convexo (H) de un conjunto finito de puntos S es la mínima región
- * convexa que contiene a S.
+ * Dada un conjunto finito de puntos (S) en el plano, su cierre convexo es la
+ * mínima región convexa que contiene a S.
  * Se puede representar mediante un polígono, donde sus vértices son los puntos
  * de S que definen el borde H.
  *
@@ -95,17 +95,22 @@ define(function (require, exports, module) {
      * Si la línea si es una tangente, entonces el punto "end" se conoce como
      * vértice de soporte.
      *
-     * @param  {Object} origin        El punto origen de la linea tangente.
-     * @param  {Number} indexOfEnd    El índice del punto final. Debe ser un índice dentro de los vértices de "hull".
-     * @param  {Object} hull          El polígono convexo.
-     * @param  {Boolean} leftTangent  Si estamos probando que es la tangente izquierda.
-     * @return {Boolean}              Si la línea: "origin"-"end" es tangente a "hull"
+     * @param  {Object}   args             Objeto con los argumentos de la función.
+     * @param  {Object}   args.origin      Punto origen de la linea tangente.
+     * @param  {Number}   args.indexOfEnd  El índice del punto final.
+     * @param  {Object}   args.hull        El polígono convexo.
+     * @param  {Function} args.checkSide   Función que verifica si esta del lado deseado.
+     * @return {Boolean}                   Si la línea: origin-end es tangente al polígono.
      */
-    isTangentLine: function (origin, indexOfEnd, hull, leftTangent) {
-      var vertices = hull.vertices;
-      var sizeHull = vertices.length;
+    isTangentLine: function (args) {
+      var origin     = args.origin,
+          indexOfEnd = args.indexOfEnd,
+          checkSide  = args.checkSide,
+          vertices   = args.hull.vertices,
+          sizeHull   = vertices.length;
 
-      var last = (indexOfEnd === 0) ? vertices[sizeHull - 1] : vertices[indexOfEnd - 1];
+      var last = (indexOfEnd === 0) ? vertices[sizeHull - 1]
+                                    : vertices[indexOfEnd - 1];
       var end  = vertices[indexOfEnd];
       var next = vertices[(indexOfEnd + 1) % sizeHull];
 
@@ -117,8 +122,7 @@ define(function (require, exports, module) {
         return false;
       }
 
-      return ((turnToNext < 0) && !leftTangent) ||
-             ((turnToNext > 0) && leftTangent);
+      return checkSide(turnToLast, turnToNext);
     }
   };
 

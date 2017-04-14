@@ -1,6 +1,6 @@
 /**
  * Implementación del algoritmo "Incremental" para calcular el cierre convexo de
- * una conjunto finito de puntos en el plano (S).
+ * un conjunto finito de puntos en el plano (S).
  *
  * La idea de este algoritmo es que el cierre convexo se vaya calculando iterativamente,
  * es decir, en cada iteración se tiene una solución parcial para un subconjunto
@@ -9,6 +9,8 @@
  * Primero comienza con un triángulo formado por los primeros tres puntos de S,
  * al que llamamos H_{3}. Y luego para el resto de puntos, en cada iteración
  * se tiene la solución calculada H_{i} y se calcula la unión con el punto.
+ *
+ * El algoritmo tiene una complejidad de O(n^2).
  *
  * ------
  * Diego Montesinos [diegoMontesinos@ciencias.unam.mx]
@@ -64,8 +66,11 @@ define(function (require, exports, module) {
      * @param  {Object} point  El punto a agregar.
      */
     appendPoint: function (hull, point) {
-      var indexLeft  = this.indexOfSupportVertex(hull, point, true);
-      var indexRight = this.indexOfSupportVertex(hull, point, false);
+      var checkLeftTangent  = function (turnToLast, turnToNext) { return turnToNext < 0; };
+      var checkRightTangent = function (turnToLast, turnToNext) { return turnToNext > 0; };
+
+      var indexLeft  = this.indexOfSupportVertex(hull, point, checkLeftTangent);
+      var indexRight = this.indexOfSupportVertex(hull, point, checkRightTangent);
 
       if (indexLeft < indexRight) {
         var countToRemove = (indexRight - indexLeft) - 1;
@@ -88,14 +93,14 @@ define(function (require, exports, module) {
      * Existen dos vértices de soporte: uno que hace que el polígono quede en el
      * semiplano izquierdo y otro que hace que quede en el lado derecho.
      *
-     * @param  {Object} hull            Polígono convexo.
-     * @param  {Object} point           Punto con el que se hacen las líneas tangentes.
-     * @param  {Boolean} ofLeftTangent  Si se encuentra el vértice izquierdo o derecho.
-     * @return {Number}                 El ínice del vértice dentro del polígono.
+     * @param  {Object}   hull       Polígono convexo.
+     * @param  {Object}   point      Punto con el que se hacen las líneas tangentes.
+     * @param  {Function} checkSide  Función que verifica si esta del lado que deseamos.
+     * @return {Number}              El ínice del vértice dentro del polígono.
      */
-    indexOfSupportVertex: function (hull, point, ofLeftTangent) {
+    indexOfSupportVertex: function (hull, point, checkSide) {
       for (var i = 0; i < hull.vertices.length; i++) {
-        if (this.isTangentLine(point, i, hull, ofLeftTangent)) {
+        if (this.isTangentLine(point, i, hull, checkSide)) {
           return i;
         }
       }
