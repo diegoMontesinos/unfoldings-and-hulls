@@ -28,7 +28,7 @@ define(function (require, exports, module) {
      * Ejecuta el algoritmo "incremental" para calcular el cierre convexo.
      *
      * @param  {Array} input  El conjunto de puntos de entrada.
-     * @return {Object}       El cierre convexo calculado, como un polígono.
+     * @return {Polygon}      El cierre convexo calculado, como un polígono.
      */
     run: function (input) {
       if (!this.validateInput(input)) {
@@ -62,8 +62,8 @@ define(function (require, exports, module) {
      * La unión entonces es formando un nuevo polígono incluyendo al nuevo punto
      * con los vértices de soporte y eliminando a los vértices innecesarios.
      *
-     * @param  {Object} hull   El cierre convexo creado en un paso de la iteración.
-     * @param  {Object} point  El punto a agregar.
+     * @param  {Polygon} hull   El cierre convexo creado en un paso de la iteración.
+     * @param  {Vector}  point  El punto a agregar.
      */
     appendPoint: function (hull, point) {
       var checkLeftTangent  = function (turnToLast, turnToNext) { return turnToNext > 0; };
@@ -93,8 +93,8 @@ define(function (require, exports, module) {
      * Existen dos vértices de soporte: uno que hace que el polígono quede en el
      * semiplano izquierdo y otro que hace que quede en el lado derecho.
      *
-     * @param  {Object}   hull       Polígono convexo.
-     * @param  {Object}   point      Punto con el que se hacen las líneas tangentes.
+     * @param  {Polygon}  hull       Polígono convexo.
+     * @param  {Vector}   point      Punto con el que se hacen las líneas tangentes.
      * @param  {Function} checkSide  Función que verifica si esta del lado que deseamos.
      * @return {Number}              El ínice del vértice dentro del polígono.
      */

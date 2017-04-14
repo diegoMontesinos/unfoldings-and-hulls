@@ -31,7 +31,7 @@ define(function (require, exports, module) {
      * Ejecuta el algoritmo "envoltura de regalo" para calcular el cierre convexo.
      *
      * @param  {Array} input  El conjunto de puntos de entrada.
-     * @return {Object}       El cierre convexo calculado, como un polígono.
+     * @return {Polygon}      El cierre convexo calculado, como un polígono.
      */
     run: function (input) {
       if (!this.validateInput(input)) {
@@ -53,7 +53,7 @@ define(function (require, exports, module) {
      * Se necesita conocer primero un vértice que ya se sabe que está en el
      * cierre convexo para comenzar a envolver (puede ocuparse el mínimo en Y).
      *
-     * @param  {Object} firstPoint  El primer punto en el borde del cierre convexo.
+     * @param  {Vector} firstPoint  El primer punto en el borde del cierre convexo.
      * @param  {Array}  points      El conjunto de puntos.
      * @return {Array}              Los vértices del borde del cierre convexo.
      */
@@ -85,9 +85,9 @@ define(function (require, exports, module) {
      * lado.
      * Por lo tanto, es fácil encontrarlo verificando esta última propiedad.
      *
-     * @param  {Object} lastPoint  El último punto de la envoltura.
+     * @param  {Vector} lastPoint  El último punto de la envoltura.
      * @param  {Array}  points     El conjunto de puntos.
-     * @return {Object}            El siguiente punto en la envolutra.
+     * @return {Vector}            El siguiente punto en la envolutra.
      */
     nextPointInWrapping: function (lastPoint, points) {
       var candidate;

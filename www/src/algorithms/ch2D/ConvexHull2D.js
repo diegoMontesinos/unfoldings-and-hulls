@@ -65,7 +65,7 @@ define(function (require, exports, module) {
      * "Divide y Vencerás".
      *
      * @param  {Array} points  Puntos del triángulo.
-     * @return {Object}        El triángulo, dado como polígono.
+     * @return {Polygon}       El triángulo, dado como polígono.
      */
     makeTriangle: function (points) {
       var a = points[0],
@@ -83,7 +83,7 @@ define(function (require, exports, module) {
     },
 
     /**
-     * Verifica si la línea dirigida ("origin" - "end") es tangente a un polígono
+     * Verifica si la línea dirigida ("origin" - "end") es tangente a un cierre
      * convexo (hull). El punto "end" debe ser vértice de "hull".
      *
      * Una línea tangente es aquella que deja contenido completamente a un
@@ -96,9 +96,9 @@ define(function (require, exports, module) {
      * vértice de soporte.
      *
      * @param  {Object}   args             Objeto con los argumentos de la función.
-     * @param  {Object}   args.origin      Punto origen de la linea tangente.
+     * @param  {Vector}   args.origin      Punto origen de la linea tangente.
      * @param  {Number}   args.indexOfEnd  El índice del punto final.
-     * @param  {Object}   args.hull        El polígono convexo.
+     * @param  {Polygon}  args.hull        El cierre convexo.
      * @param  {Function} args.checkSide   Función que verifica si esta del lado deseado.
      * @return {Boolean}                   Si la línea: origin-end es tangente al polígono.
      */

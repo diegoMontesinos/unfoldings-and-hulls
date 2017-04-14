@@ -22,7 +22,7 @@ define(function (require, exports, module) {
   /**
    * Agrega un vértice al polígono.
    *
-   * @param  {Object} vertex  El vértice a agregar.
+   * @param  {Vector} vertex  El vértice a agregar.
    */
   Polygon.prototype.addVertex = function (vertex) {
     this.vertices.push(vertex);
@@ -32,7 +32,7 @@ define(function (require, exports, module) {
    * Evalua si un punto está contenido (dentro) del polígono o no.
    * SOLO FUNCIONA SI ES UN POLÍGONO CONVEXO.
    *
-   * @param  {Object} point  El punto a evaluar.
+   * @param  {Vector} point  El punto a evaluar.
    * @return {Boolean}       Si el punto está contenido en el polígono.
    */
   Polygon.prototype.contains = function (point) {

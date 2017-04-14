@@ -253,13 +253,13 @@ define(function (require, exports, module) {
      * hacia atrás o hacia delante, por lo que se requiere una función que actualice
      * el índice.
      *
-     * @param  {Object} args             Argumentos de la función.
-     * @param  {Object} args.origin      Punto origen.
-     * @param  {Object} args.index       Índice actual, el que se va actualizar.
-     * @param  {Object} args.hull        El cierre convexo.
-     * @param  {Object} args.update      Función que actualiza el índice.
-     * @param  {Object} args.checkSide   La función que va a checar si está del lado correcto.
-     * @return {Number}                  El índice del vértice de soporte.
+     * @param  {Object}   args             Argumentos de la función.
+     * @param  {Vector}   args.origin      Punto origen.
+     * @param  {Number}   args.index       Índice actual, el que se va actualizar.
+     * @param  {Polygon}  args.hull        El cierre convexo.
+     * @param  {Function} args.update      Función que actualiza el índice.
+     * @param  {Function} args.checkSide   La función que va a checar si está del lado correcto.
+     * @return {Number}                    El índice del vértice de soporte.
      */
     walkUntilReachTangent: function (args) {
       var origin    = args.origin,

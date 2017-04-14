@@ -35,7 +35,7 @@ define(function (require, exports, module) {
      * Ejecuta el algoritmo "escaneo de graham" para calcular el cierre convexo.
      *
      * @param  {Array} input  El conjunto de puntos de entrada.
-     * @return {Object}       El cierre convexo calculado, como un polígono.
+     * @return {Polygon}      El cierre convexo calculado, como un polígono.
      */
     run: function (input) {
       if (!this.validateInput(input)) {
@@ -76,7 +76,7 @@ define(function (require, exports, module) {
     /**
      * Obtiene la función comparadora de pendiente para un pivote.
      *
-     * @param  {Object} pivot  El punto pivote.
+     * @param  {Vector} pivot  El punto pivote.
      * @return {Function}      El comparador por pendiente.
      */
     grahamComparator: function (pivot) {
