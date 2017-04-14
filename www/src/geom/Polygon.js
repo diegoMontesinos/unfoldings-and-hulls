@@ -51,6 +51,50 @@ define(function (require, exports, module) {
     return true;
   };
 
+  /**
+   * Regresa el índice del vértice más a la izquierda del polígono.
+   *
+   * @return {Number}  El índice del vértice más a la izquierda.
+   */
+  Polygon.prototype.indexOfLeftmostVertex = function () {
+    var leftmost;
+    var index;
+
+    var vertex;
+    for (var i = 0; i < this.vertices.length; i++) {
+      vertex = this.vertices[i];
+
+      if (!leftmost || (vertex.x < leftmost.x)) {
+        leftmost = vertex;
+        index = i;
+      }
+    }
+
+    return index;
+  };
+
+  /**
+   * Regresa el índice del vértice más a la derecha del polígono.
+   *
+   * @return {Number}  El índice del vértice más a la derecha.
+   */
+  Polygon.prototype.indexOfRightmostVertex = function () {
+    var rightmost;
+    var index;
+
+    var vertex;
+    for (var i = 0; i < this.vertices.length; i++) {
+      vertex = this.vertices[i];
+
+      if (!rightmost || (vertex.x > rightmost.x)) {
+        rightmost = vertex;
+        index = i;
+      }
+    }
+
+    return index;
+  };
+
   if (!exports) {
     exports = {};
   }

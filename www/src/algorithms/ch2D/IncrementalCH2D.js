@@ -66,8 +66,8 @@ define(function (require, exports, module) {
      * @param  {Object} point  El punto a agregar.
      */
     appendPoint: function (hull, point) {
-      var checkLeftTangent  = function (turnToLast, turnToNext) { return turnToNext < 0; };
-      var checkRightTangent = function (turnToLast, turnToNext) { return turnToNext > 0; };
+      var checkLeftTangent  = function (turnToLast, turnToNext) { return turnToNext > 0; };
+      var checkRightTangent = function (turnToLast, turnToNext) { return turnToNext < 0; };
 
       var indexLeft  = this.indexOfSupportVertex(hull, point, checkLeftTangent);
       var indexRight = this.indexOfSupportVertex(hull, point, checkRightTangent);
@@ -99,8 +99,16 @@ define(function (require, exports, module) {
      * @return {Number}              El ínice del vértice dentro del polígono.
      */
     indexOfSupportVertex: function (hull, point, checkSide) {
+      var isTangent = false;
       for (var i = 0; i < hull.vertices.length; i++) {
-        if (this.isTangentLine(point, i, hull, checkSide)) {
+        isTangent = this.isTangentLine({
+          origin     : point,
+          indexOfEnd : i,
+          hull       : hull,
+          checkSide  : checkSide
+        });
+
+        if (isTangent) {
           return i;
         }
       }
