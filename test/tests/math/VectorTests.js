@@ -1,5 +1,5 @@
-
 define(function (require) {
+  'use strict';
 
   var Vector = require('www/src/math/Vector.js');
   var expect = chai.expect;

@@ -29,6 +29,18 @@ define(function (require, exports, module) {
     return point;
   };
 
+  View2D.prototype.drawText = function (str, x, y) {
+    var text = document.createElementNS(SVGNS, 'text');
+    text.setAttributeNS(null, 'x', x);
+    text.setAttributeNS(null, 'y', y);
+    text.setAttributeNS(null, 'fill', 'black');
+    text.innerHTML = str;
+
+    this.svg.appendChild(text);
+
+    return text;
+  };
+
   View2D.prototype.drawPolygon = function (polygon, drawIndexes) {
     var pointsStr = '';
     for (var i = 0; i < polygon.vertices.length; i++) {
@@ -36,13 +48,7 @@ define(function (require, exports, module) {
       pointsStr += (vertex.x + ',' + vertex.y + ' ');
 
       if (drawIndexes) {
-        var textIndex = document.createElementNS(SVGNS, 'text');
-        textIndex.setAttributeNS(null, 'x', vertex.x);
-        textIndex.setAttributeNS(null, 'y', vertex.y);
-        textIndex.setAttributeNS(null, 'fill', 'black');
-        textIndex.innerHTML = '' + i;
-
-        this.svg.appendChild(textIndex);
+        this.drawText('' + i, vertex.x, vertex.y);
       }
     }
 
