@@ -9,16 +9,19 @@ requirejs.config({
 
     // Utils
     'debug'      : 'lib/utils/debug',
+    'jquery'     : 'lib/utils/jquery',
     'underscore' : 'lib/utils/underscore',
 
     // Three
-    'three'      : 'lib/three/three',
-    'tbControls' : 'lib/three/controls/TrackballControls'
+    'three'           : 'lib/three/three',
+    'TBControls'      : 'lib/three/controls/TrackballControls',
+    'OrthoTBControls' : 'lib/three/controls/OrthographicTrackballControls'
   },
 
   // Configuracion para las bibliotecas no modulares
   shim: {
-    'tbControls' : { deps: [ 'three' ], exports: 'TrackballControls' }
+    'TBControls'      : { deps: [ 'three' ], exports: 'TrackballControls' },
+    'OrthoTBControls' : { deps: [ 'three' ], exports: 'OrthographicTrackballControls' }
   }
 });
 
