@@ -11,7 +11,12 @@
 define(function (require, exports, module) {
   'use strict';
 
-  var EPSILON = 1e-12;
+  // Dependencias
+  var _     = require('underscore');
+  var THREE = require('three');
+
+  // Constantes
+  const EPSILON = 1e-12;
 
   /**
    * Construye un vector dadas sus coordenadas.
@@ -22,13 +27,14 @@ define(function (require, exports, module) {
    * @return {Object}    El vector construido.
    */
   var Vector = function (x, y, z) {
-    this.x = x || 0;
-    this.y = y || 0;
-    this.z = z || 0;
+    THREE.Vector3.call(this, x, y, z);
   };
 
+  Vector.prototype = Object.create(THREE.Vector3.prototype);
+  Vector.prototype.constructor = Vector;
+
   /**
-   * Evalua si el vector que invoca la función es igual a otro dado.
+   * Evalúa si el vector que invoca la función es igual a otro dado.
    *
    * @param  {Object} v  El vector dado.
    * @return {Boolean}   Si los vectores son iguales.
@@ -61,27 +67,6 @@ define(function (require, exports, module) {
   };
 
   /**
-   * Calcula el producto punto del vector que invoca la función con otro dado.
-   *
-   * @param  {Object} v  El otro vector dado.
-   * @return {Number}    El producto punto calculado.
-   */
-  Vector.prototype.dot = function (v) {
-    return (this.x * v.x) + (this.y * v.y);
-  };
-
-  /**
-   * Suma un vector al vector que invoca la funcion.
-   *
-   * @param  {Object} v  El vector a sumar.
-   */
-  Vector.prototype.add = function (v) {
-    this.x += v.x;
-    this.y += v.y;
-    this.z += v.z;
-  };
-
-  /**
    * Calcula el area con signo del paralelogramo derivado por tres puntos.
    *
    * Este calculo se basa en el producto vectorial, o producto cruz, eliminando
@@ -108,9 +93,9 @@ define(function (require, exports, module) {
    * En realidad es un alias de la función Vector.area2, pero permite redondeo de
    * una epsilon para evitar errores de aproximación.
    *
-	 * 0 : colineal
-	 * - : vuelta a la izquierda
-	 * + : vuelta a la derecha
+   * 0 : colineal
+   * - : vuelta a la izquierda
+   * + : vuelta a la derecha
    *
    * @param  {Object} a  Primer vertice.
    * @param  {Object} b  Primer vertice.
@@ -174,9 +159,9 @@ define(function (require, exports, module) {
    * En realidad es un alias de la función Vector.volume3, pero permite redondeo
    * de una epsilon para evitar errores de aproximación.
    *
-	 * 0 : coplanar
-	 * - : detras de la normal
-	 * + : de frente a la normal
+   * 0 : coplanar
+   * - : detras de la normal
+   * + : de frente a la normal
    *
    * @param  {Object} a  Primer vertice.
    * @param  {Object} b  Primer vertice.
