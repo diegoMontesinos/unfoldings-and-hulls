@@ -26,7 +26,7 @@ define(function (require, exports, module) {
 
   var _            = require('underscore');
   var Vector       = require('math/Vector');
-  var Polygon      = require('structures/Polygon');
+  var Polygon      = require('geom/Polygon');
   var ConvexHull2D = require('algorithms/ch2D/ConvexHull2D');
 
   var GrahamCH2D = {

@@ -15,7 +15,7 @@ define(function (require, exports, module) {
   'use strict';
 
   var Vector  = require('math/Vector');
-  var Polygon = require('structures/Polygon');
+  var Polygon = require('geom/Polygon');
 
   var ConvexHull2D = {
 

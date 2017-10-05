@@ -16,9 +16,9 @@ define(function (require, exports, module) {
   'use strict';
 
   // Dependencias
-  var DCEL         = require('structures/dcel/DCEL');
-  var DCELVertex   = require('structures/dcel/DCELVertex');
-  var DCELHalfEdge = require('structures/dcel/DCELHalfEdge');
+  var DCEL         = require('geom/dcel/DCEL');
+  var DCELVertex   = require('geom/dcel/DCELVertex');
+  var DCELHalfEdge = require('geom/dcel/DCELHalfEdge');
   var DCELUtils    = require('misc/DCELUtils');
   var Vector3      = require('math/Vector3');
 
