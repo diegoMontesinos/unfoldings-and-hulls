@@ -10,25 +10,61 @@ define(function (require, exports, module) {
   'use strict';
 
   // Debug ID
-  var debug = require('debug')('app');
+  const debug = require('debug')('app');
 
-  var WorkspaceViewController = require('views/workspace/WorkspaceViewController');
+  // Dependencias
+  const $ = require('jquery');
+
+  // Assets
+  const Fonts = require('drawables/Fonts');
+
+  // Vistas
+  const WorkspaceViewController = require('views/WorkspaceViewController');
 
   var UnfoldingsAndHulls = function () {
     debug('Setup app');
 
     var workspaceContainer = document.getElementById('workspace-container');
-    
-    this.workspaceView = new WorkspaceViewController(workspaceContainer);
-    this.workspaceView.start();
+    this.workspace = new WorkspaceViewController(workspaceContainer);
   };
 
   UnfoldingsAndHulls.prototype = {
 
+    loadAssets: function (doneCallback) {
+      debug('Loading assets...');
+
+      var assetsModules = [ Fonts ];
+      var promises = [];
+      for (var i = 0; i < assetsModules.length; i++) {
+        var promise = loadAssetModule(assetsModules[i]);
+        promises.push(promise);
+      }
+
+      $.when.apply($, promises).then(function () {
+        debug('Assets loaded!');
+        doneCallback();
+      });
+    },
+
     start: function () {
       debug('Starting app');
+
+      this.workspace.start();
     }
   };
+
+  function loadAssetModule (assetModule) {
+    var deferred = $.Deferred();
+    if (!assetModule.load) {
+      deferred.resolve();
+    } else {
+      assetModule.load(function () {
+        deferred.resolve();
+      });
+    }
+
+    return deferred.promise();
+  }
 
   if (!exports) {
     exports = {};
