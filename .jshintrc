@@ -3,6 +3,7 @@
   "passfail": false,    // Stop on first error.
   "maxerr": 10,         // Maximum errors before stopping.
   "maxlen": 120,
+  "esversion":6,
 
   // Predefined globals whom JSHint will ignore.
   "browser": true,      // Standard browser globals e.g. 'window', 'document'.
