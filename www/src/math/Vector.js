@@ -12,7 +12,6 @@ define(function (require, exports, module) {
   'use strict';
 
   // Dependencias
-  var _     = require('underscore');
   var THREE = require('three');
 
   // Constantes

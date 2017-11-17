@@ -95,6 +95,16 @@ define(function (require, exports, module) {
     return index;
   };
 
+  Polygon.prototype.copy = function () {
+    var vertices = [];
+    for (var i = 0; i < this.vertices.length; i++) {
+      var vertex = this.vertices[i];
+      vertices.push(new Vector(vertex.x, vertex.y, vertex.z));
+    }
+
+    return new Polygon(vertices);
+  };
+
   if (!exports) {
     exports = {};
   }
