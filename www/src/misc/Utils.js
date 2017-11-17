@@ -8,7 +8,7 @@
 define(function (require, exports, module) {
   'use strict';
 
-  var Vector = require('math/Vector');
+  const Vector = require('math/Vector');
 
   var Utils = {
 

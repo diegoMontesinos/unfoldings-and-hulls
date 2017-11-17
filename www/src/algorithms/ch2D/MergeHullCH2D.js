@@ -265,7 +265,7 @@ define(function (require, exports, module) {
       var origin    = args.origin,
           index     = args.index,
           hull      = args.hull,
-          updateI   = args.update,
+          update    = args.update,
           checkSide = args.checkSide;
 
       var isTanget = false;
@@ -326,7 +326,7 @@ define(function (require, exports, module) {
       var slice = [];
 
       var i = start;
-      while (i != end) {
+      while (i !== end) {
         slice.push(hull.vertices[i]);
         i = this.nextIndexTo(i, hull);
       }
