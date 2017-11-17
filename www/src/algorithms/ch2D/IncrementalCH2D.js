@@ -1,13 +1,16 @@
 /**
  * Implementación del algoritmo "Incremental" para calcular el cierre convexo de
- * una conjunto finito de puntos en el plano.
+ * un conjunto finito de puntos en el plano (S).
  *
- * El cierre convexo de un conjunto finito de puntos S es la mínima región convexa
- * que contiene a S.
+ * La idea de este algoritmo es que el cierre convexo se vaya calculando iterativamente,
+ * es decir, en cada iteración se tiene una solución parcial para un subconjunto
+ * de S y se incrementa la solución añadiendo un punto. De ahí el nombre.
  *
- * Las funciones de este módulo representan los pasos importantes del algoritmo,
- * y están pensadas para que se puedan ocupar de forma independiente. O también
- * existe la función "run", para calcular el cierre convexo en una sola llamada.
+ * Primero comienza con un triángulo formado por los primeros tres puntos de S,
+ * al que llamamos H_{3}. Y luego para el resto de puntos, en cada iteración
+ * se tiene la solución calculada H_{i} y se calcula la unión con el punto.
+ *
+ * El algoritmo tiene una complejidad de O(n^2).
  *
  * ------
  * Diego Montesinos [diegoMontesinos@ciencias.unam.mx]
@@ -16,26 +19,23 @@
 define(function (require, exports, module) {
   'use strict';
 
-  var Vector  = require('math/Vector');
-  var Polygon = require('geom/Polygon');
+  var _            = require('underscore');
+  var ConvexHull2D = require('algorithms/ch2D/ConvexHull2D');
 
   var IncrementalCH2D = {
 
     /**
      * Ejecuta el algoritmo "incremental" para calcular el cierre convexo.
      *
-     * Esta implementación ocupa un polígono para representar al cierre convexo,
-     * manteniendo a los vértices en una lista.
-     *
      * @param  {Array} input  El conjunto de puntos de entrada.
-     * @return {Object}       El cierre convexo calculado, como un polígono.
+     * @return {Polygon}      El cierre convexo calculado, como un polígono.
      */
     run: function (input) {
-      if (input.length < 3) {
+      if (!this.validateInput(input)) {
         return undefined;
       }
 
-      var hull = this.makeFirstHull(input);
+      var hull = this.makeTriangle(input);
 
       for (var i = 3; i < input.length; i++) {
         var point = input[i];
@@ -45,29 +45,6 @@ define(function (require, exports, module) {
       }
 
       return hull;
-    },
-
-    /**
-     * Primer paso del algoritmo incremental.
-     * Genera el cierre convexo de los primeros tres puntos del conjunto de entrada,
-     * es decir, un triángulo: H_{3}.
-     *
-     * @param  {Array} input  El conjunto de puntos de entrada.
-     * @return {Object}       El primer polígono para el algoritmo.
-     */
-    makeFirstHull: function (input) {
-      var a = input[0],
-          b = input[1],
-          c = input[2];
-
-      var vertices;
-      if (Vector.areaSign(a, b, c) < 0) {
-        vertices = [a, b, c];
-      } else {
-        vertices = [a, c, b];
-      }
-
-      return new Polygon(vertices);
     },
 
     /**
@@ -85,12 +62,15 @@ define(function (require, exports, module) {
      * La unión entonces es formando un nuevo polígono incluyendo al nuevo punto
      * con los vértices de soporte y eliminando a los vértices innecesarios.
      *
-     * @param  {Object} hull   El cierre convexo creado en un paso de la iteración.
-     * @param  {Object} point  El punto a agregar.
+     * @param  {Polygon} hull   El cierre convexo creado en un paso de la iteración.
+     * @param  {Vector}  point  El punto a agregar.
      */
     appendPoint: function (hull, point) {
-      var indexLeft  = this.indexOfSupportVertex(hull, point, true);
-      var indexRight = this.indexOfSupportVertex(hull, point, false);
+      var checkLeftTangent  = function (turnToLast, turnToNext) { return turnToNext > 0; };
+      var checkRightTangent = function (turnToLast, turnToNext) { return turnToNext < 0; };
+
+      var indexLeft  = this.indexOfSupportVertex(hull, point, checkLeftTangent);
+      var indexRight = this.indexOfSupportVertex(hull, point, checkRightTangent);
 
       if (indexLeft < indexRight) {
         var countToRemove = (indexRight - indexLeft) - 1;
@@ -113,44 +93,30 @@ define(function (require, exports, module) {
      * Existen dos vértices de soporte: uno que hace que el polígono quede en el
      * semiplano izquierdo y otro que hace que quede en el lado derecho.
      *
-     * @param  {Object} hull            Polígono convexo.
-     * @param  {Object} point           Punto con el que se hacen las líneas tangentes.
-     * @param  {Boolean} ofLeftTangent  Si se encuentra el vértice izquierdo o derecho.
-     * @return {Number}                 El ínice del vértice dentro del polígono.
+     * @param  {Polygon}  hull       Polígono convexo.
+     * @param  {Vector}   point      Punto con el que se hacen las líneas tangentes.
+     * @param  {Function} checkSide  Función que verifica si esta del lado que deseamos.
+     * @return {Number}              El ínice del vértice dentro del polígono.
      */
-    indexOfSupportVertex: function (hull, point, ofLeftTangent) {
-      var vertices = hull.vertices;
-      var size     = vertices.length;
+    indexOfSupportVertex: function (hull, point, checkSide) {
+      var isTangent = false;
+      for (var i = 0; i < hull.vertices.length; i++) {
+        isTangent = this.isTangentLine({
+          origin     : point,
+          indexOfEnd : i,
+          hull       : hull,
+          checkSide  : checkSide
+        });
 
-      var current, last, next;
-
-      var turnToLast, turnToNext;
-      var sameTurn;
-
-      var isSupportVertex;
-
-      for (var i = 1; i <= size; i++) {
-        last    = vertices[i - 1];
-        current = vertices[i % size];
-        next    = vertices[(i + 1) % size];
-
-        turnToLast = Vector.areaSign(point, current, last);
-        turnToNext = Vector.areaSign(point, current, next);
-
-        sameTurn = (turnToLast * turnToNext) > 0;
-        if (!sameTurn) {
-          continue;
-        }
-
-        isSupportVertex = ((turnToNext < 0) && !ofLeftTangent) || ((turnToNext > 0) && ofLeftTangent);
-        if (isSupportVertex) {
-          return (i % size);
+        if (isTangent) {
+          return i;
         }
       }
 
       return -1;
     }
   };
+  _.extend(IncrementalCH2D, ConvexHull2D);
 
   if (!exports) {
     exports = {};

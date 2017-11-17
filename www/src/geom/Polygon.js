@@ -16,13 +16,13 @@ define(function (require, exports, module) {
   var Vector = require('math/Vector');
 
   var Polygon = function (vertices) {
-    this.vertices = vertices;
+    this.vertices = vertices || [];
   };
 
   /**
    * Agrega un vértice al polígono.
    *
-   * @param  {Object} vertex  El vértice a agregar.
+   * @param  {Vector} vertex  El vértice a agregar.
    */
   Polygon.prototype.addVertex = function (vertex) {
     this.vertices.push(vertex);
@@ -32,7 +32,7 @@ define(function (require, exports, module) {
    * Evalua si un punto está contenido (dentro) del polígono o no.
    * SOLO FUNCIONA SI ES UN POLÍGONO CONVEXO.
    *
-   * @param  {Object} point  El punto a evaluar.
+   * @param  {Vector} point  El punto a evaluar.
    * @return {Boolean}       Si el punto está contenido en el polígono.
    */
   Polygon.prototype.contains = function (point) {
@@ -49,6 +49,60 @@ define(function (require, exports, module) {
     }
 
     return true;
+  };
+
+  /**
+   * Regresa el índice del vértice más a la izquierda del polígono.
+   *
+   * @return {Number}  El índice del vértice más a la izquierda.
+   */
+  Polygon.prototype.indexOfLeftmostVertex = function () {
+    var leftmost;
+    var index;
+
+    var vertex;
+    for (var i = 0; i < this.vertices.length; i++) {
+      vertex = this.vertices[i];
+
+      if (!leftmost || (vertex.x < leftmost.x)) {
+        leftmost = vertex;
+        index = i;
+      }
+    }
+
+    return index;
+  };
+
+  /**
+   * Regresa el índice del vértice más a la derecha del polígono.
+   *
+   * @return {Number}  El índice del vértice más a la derecha.
+   */
+  Polygon.prototype.indexOfRightmostVertex = function () {
+    var rightmost;
+    var index;
+
+    var vertex;
+    for (var i = 0; i < this.vertices.length; i++) {
+      vertex = this.vertices[i];
+
+      if (!rightmost || (vertex.x > rightmost.x)) {
+        rightmost = vertex;
+        index = i;
+      }
+    }
+
+    return index;
+  };
+
+  Polygon.prototype.copy = function () {
+    var vertices = [];
+    for (var i = 0; i < this.vertices.length; i++) {
+      var vertex = this.vertices[i];
+      vertices.push(new Vector(vertex.x, vertex.y, vertex.z));
+    }
+
+    return new Polygon(vertices);
   };
 
   if (!exports) {

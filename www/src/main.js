@@ -8,27 +8,29 @@ requirejs.config({
   paths: {
 
     // Utils
-    'jquery'     : 'lib/jquery/jquery',
     'debug'      : 'lib/utils/debug',
-
-    'interact'   : 'lib/utils/interact',
+    'jquery'     : 'lib/utils/jquery',
+    'underscore' : 'lib/utils/underscore',
+    'tween'      : 'lib/utils/tween',
 
     // Three
-    'three'      : 'lib/three/three',
-    'tbControls' : 'lib/three/controls/TrackballControls'
+    'three'           : 'lib/three/three',
+    'TBControls'      : 'lib/three/controls/TrackballControls',
+    'OrthoTBControls' : 'lib/three/controls/OrthographicTrackballControls'
   },
 
   // Configuracion para las bibliotecas no modulares
   shim: {
-    'tbControls' : { deps: [ 'three' ], exports: 'TrackballControls' }
+    'TBControls'      : { deps: [ 'three' ], exports: 'TrackballControls' },
+    'OrthoTBControls' : { deps: [ 'three' ], exports: 'OrthographicTrackballControls' }
   }
 });
 
 // Carga la aplicacion principal
-requirejs(['jquery', 'UnfoldingsAndHulls'], function ($, app) {
+requirejs(['UnfoldingsAndHulls'], function (app) {
   'use strict';
 
-  $(document).ready(function () {
+  app.loadAssets(function () {
     app.start();
   });
 });

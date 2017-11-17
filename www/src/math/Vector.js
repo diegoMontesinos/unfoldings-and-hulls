@@ -11,7 +11,11 @@
 define(function (require, exports, module) {
   'use strict';
 
-  var EPSILON = 1e-11;
+  // Dependencias
+  var THREE = require('three');
+
+  // Constantes
+  const EPSILON = 1e-12;
 
   /**
    * Construye un vector dadas sus coordenadas.
@@ -22,13 +26,14 @@ define(function (require, exports, module) {
    * @return {Object}    El vector construido.
    */
   var Vector = function (x, y, z) {
-    this.x = x || 0;
-    this.y = y || 0;
-    this.z = z || 0;
+    THREE.Vector3.call(this, x, y, z);
   };
 
+  Vector.prototype = Object.create(THREE.Vector3.prototype);
+  Vector.prototype.constructor = Vector;
+
   /**
-   * Evalua si el vector que invoca la función es igual a otro dado.
+   * Evalúa si el vector que invoca la función es igual a otro dado.
    *
    * @param  {Object} v  El vector dado.
    * @return {Boolean}   Si los vectores son iguales.
@@ -37,29 +42,6 @@ define(function (require, exports, module) {
     return Math.abs(this.x - v.x) <= EPSILON &&
            Math.abs(this.y - v.y) <= EPSILON &&
            Math.abs(this.z - v.z) <= EPSILON;
-  };
-
-  /**
-   * Comparador lexicografico.
-   * Compara primero por la coordenada x, si son iguales, compara por la y o por
-   * la z.
-   *
-   * @param  {Object} v  Un Vector para comparar
-   * @return {Number}    El resultado de la comparacion:
-   *                          0 si son iguales,
-   *                          < 0 si este vector es menor que el pasado
-   *                          > 0 si este vector es mayo que el pasado
-   */
-  Vector.prototype.compareTo = function (v) {
-    if (!this.equals(v)) {
-      var diff = this.x - v.x;
-      diff = diff === 0.0 ? this.y - v.y : diff;
-      diff = diff === 0.0 ? this.z - v.z : diff;
-
-      return diff;
-    }
-
-    return 0;
   };
 
   /**
@@ -81,27 +63,6 @@ define(function (require, exports, module) {
     var z = len * v.z;
 
     return new Vector(x, y, z);
-  };
-
-  /**
-   * Calcula el producto punto del vector que invoca la función con otro dado.
-   *
-   * @param  {Object} v  El otro vector dado.
-   * @return {Number}    El producto punto calculado.
-   */
-  Vector.prototype.dot = function (v) {
-    return (this.x * v.x) + (this.y * v.y);
-  };
-
-  /**
-   * Suma un vector al vector que invoca la funcion.
-   *
-   * @param  {Object} v [description]
-   */
-  Vector.prototype.add = function (v) {
-    this.x += v.x;
-    this.y += v.y;
-    this.z += v.z;
   };
 
   /**
@@ -131,9 +92,9 @@ define(function (require, exports, module) {
    * En realidad es un alias de la función Vector.area2, pero permite redondeo de
    * una epsilon para evitar errores de aproximación.
    *
-	 * 0 : colineal
-	 * - : vuelta a la izquierda
-	 * + : vuelta a la derecha
+   * 0 : colineal
+   * - : vuelta a la izquierda
+   * + : vuelta a la derecha
    *
    * @param  {Object} a  Primer vertice.
    * @param  {Object} b  Primer vertice.
@@ -197,9 +158,9 @@ define(function (require, exports, module) {
    * En realidad es un alias de la función Vector.volume3, pero permite redondeo
    * de una epsilon para evitar errores de aproximación.
    *
-	 * 0 : coplanar
-	 * - : detras de la normal
-	 * + : de frente a la normal
+   * 0 : coplanar
+   * - : detras de la normal
+   * + : de frente a la normal
    *
    * @param  {Object} a  Primer vertice.
    * @param  {Object} b  Primer vertice.
@@ -229,6 +190,41 @@ define(function (require, exports, module) {
    */
   Vector.areCoplanar = function (a, b, c, d) {
     return Vector.volumeSign(a, b, c, d) === 0;
+  };
+
+  /**
+   * Devuelve una función comparadora de vectores por un eje dado.
+   * Es decir, regresa un comparador para vectores basado en una coordenada
+   * dada.
+   *
+   * @param  {String} axis  La coordenada a comparar: 'x', 'y' o 'z'.
+   * @return {Function}     El comparador.
+   */
+  Vector.comparatorByAxis = function (axis) {
+    return function (v0, v1) {
+      return (v0[axis] - v1[axis]);
+    };
+  };
+
+  /**
+   * Comparador lexicografico de vectores.
+   * Primero los compara por su coordenada 'x'.
+   * En caso de tener el mismo valor en 'x', los compara con 'y'.
+   * En caso de tener el mismo valor en 'y', los compara con 'z'.
+   *
+   * @param  {Object} v0 Un vector a comparar.
+   * @param  {Object} v1 El otro vector a comparar.
+   * @return {Number}    El resultado de la comparacion:
+   *                          0 si son iguales,
+   *                          < 0 si v0 es mayor que v1,
+   *                          > 0 si v0 es menor que v1.
+   */
+  Vector.lexicographicalComparator = function (v0, v1) {
+    var difference = v0.x - v1.x;
+    difference = (difference === 0.0) ? (v0.y - v1.y) : difference;
+    difference = (difference === 0.0) ? (v0.z - v1.z) : difference;
+
+    return difference;
   };
 
   if (!exports) {
