@@ -16,8 +16,9 @@ define(function (require, exports, module) {
   var debug = require('debug')('app:views:workspace');
 
   // Dependencias
-  var $     = require('jquery');
-  var THREE = require('three');
+  var $      = require('jquery');
+  var THREE  = require('three');
+  var TWEEN  = require('tween');
   require('OrthoTBControls');
 
   // Constantes
@@ -42,7 +43,6 @@ define(function (require, exports, module) {
 
   // Funciones del modulo
   WorkspaceViewController.prototype = {
-
     refreshContainerSize: function () {
       if (!this.containerSize) {
         this.containerSize = {};
@@ -61,7 +61,7 @@ define(function (require, exports, module) {
         this.containerSize.width  / 2,
         this.containerSize.height / 2,
         this.containerSize.height / - 2,
-        1,
+        0.1,
         100
       );
       this.mainCamera.position.set(0, 0, 1);
@@ -119,65 +119,47 @@ define(function (require, exports, module) {
       }
 
       this.rendering = true;
-      this.animate();
+      requestAnimationFrame(this.animate.bind(this));
     },
 
     pause: function () {
       this.rendering = false;
     },
 
-    animate: function () {
+    animate: function (time) {
       if (!this.rendering) {
         return;
       }
 
-      requestAnimationFrame(this.animate.bind(this));
+      TWEEN.update(time);
+      this.updateTHREE(time);
 
+      requestAnimationFrame(this.animate.bind(this));
+    },
+
+    updateTHREE: function () {
       if (this.controls) {
         this.controls.update();
       }
-
+      
       this.renderer.render(this.scene, this.mainCamera);
     },
 
-    addPointsSet: function (points, color) {
-      var pointsSet = new THREE.Group();
-
-      var material = new THREE.PointsMaterial({
-        color : color || 0x000,
-        size  : 1.0
-      });
-
-      for (var i = 0; i < points.length; i++) {
-        var point = points[i];
-
-        var geometry = new THREE.CircleBufferGeometry(1.0, 32);
-        var circle = new THREE.Mesh(geometry, material);
-        circle.position.set(point.x, point.y, point.z);
-
-        pointsSet.add(circle);
-      }
-
-      this.scene.add(pointsSet);
-
-      return pointsSet;
+    setupEventListeners: function () {
+      window.addEventListener('resize', this.onWindowResize.bind(this), false);
     },
 
-     setupEventListeners: function () {
-       window.addEventListener('resize', this.onWindowResize.bind(this), false);
-     },
+    onWindowResize: function () {
+      this.refreshContainerSize();
 
-     onWindowResize: function () {
-       this.refreshContainerSize();
+      this.mainCamera.left   = this.containerSize.width  / - 2;
+      this.mainCamera.right  = this.containerSize.width  / 2;
+      this.mainCamera.top    = this.containerSize.height / 2;
+      this.mainCamera.bottom = this.containerSize.height / - 2;
+      this.mainCamera.updateProjectionMatrix();
 
-       this.mainCamera.left   = this.containerSize.width  / - 2;
-       this.mainCamera.right  = this.containerSize.width  / 2;
-       this.mainCamera.top    = this.containerSize.height / 2;
-       this.mainCamera.bottom = this.containerSize.height / - 2;
-       this.mainCamera.updateProjectionMatrix();
-
-       this.renderer.setSize(this.containerSize.width, this.containerSize.height);
-     }
+      this.renderer.setSize(this.containerSize.width, this.containerSize.height);
+    }
   };
 
   if (!exports) {

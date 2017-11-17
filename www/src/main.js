@@ -11,6 +11,7 @@ requirejs.config({
     'debug'      : 'lib/utils/debug',
     'jquery'     : 'lib/utils/jquery',
     'underscore' : 'lib/utils/underscore',
+    'tween'      : 'lib/utils/tween',
 
     // Three
     'three'           : 'lib/three/three',
@@ -29,5 +30,7 @@ requirejs.config({
 requirejs(['UnfoldingsAndHulls'], function (app) {
   'use strict';
 
-  app.start();
+  app.loadAssets(function () {
+    app.start();
+  });
 });
